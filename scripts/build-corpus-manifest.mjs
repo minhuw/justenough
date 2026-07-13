@@ -47,7 +47,7 @@ async function main() {
     });
     for (const record of records) {
       const nativeId = record.identity.native_id;
-      if (!/^[a-z0-9][a-z0-9._-]*$/.test(nativeId)) {
+      if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(nativeId)) {
         throw new Error(`${spec.key}/${nativeId} is not safe for an R2 object key`);
       }
       const body = Buffer.from(`${JSON.stringify(record)}\n`);
@@ -75,6 +75,7 @@ async function main() {
       validation_version: validation.validation_version,
       checked_at: validation.checked_at,
       terminal_evidence: validation.terminal_evidence,
+      swe_bench_pro_evidence: validation.swe_bench_pro_evidence,
     },
   };
   await writeAtomically(

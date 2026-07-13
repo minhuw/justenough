@@ -50,12 +50,14 @@ test("server-renders the full evidence explorer", async () => {
 
   const html = await response.text();
   assert.match(html, /Cases, minus the archaeology/);
-  assert.match(html, /id="case-results">202<!-- --> <!-- -->cases/);
+  assert.match(html, /id="case-results">933<!-- --> <!-- -->cases/);
   assert.match(html, /Add bail-on-test-failure handling to Testem/);
   assert.match(html, /Boot Alpine in QEMU with SSH access/);
+  assert.match(html, /TypeError combining VarsWithSources and dict in combinevars/);
   assert.match(html, /Published trials/);
-  assert.match(html, /27424/);
+  assert.match(html, /33566/);
   assert.match(html, /Any benchmark/);
+  assert.match(html, /SWE-Bench Pro/);
   assert.doesNotMatch(html, /aria-pressed/);
   assert.doesNotMatch(
     html,
@@ -120,7 +122,7 @@ test("recommends an exact configuration only when the evidence gate clears", asy
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
-      task: "In a repository, implement a new Python CLI feature, update configuration handling, and add regression tests.",
+      task: "In a repository, add stepped slice parsing, slicing, and assignment for arrays and strings with rune-correct indexing. Support forward and reverse steps, preserve exact error behavior, and reject zero steps.",
       reliabilityTarget: 0.7,
     }),
   });
@@ -180,6 +182,20 @@ test("server-renders the full DeepSWE model set", async () => {
   assert.match(html, /kimi-k2-7-code/);
 });
 
+test("server-renders disclosed SWE-Bench Pro outcomes", async () => {
+  const response = await render(
+    "/evidence/swe-bench-pro/public-2026-02-23/instance_ansible__ansible-0ea40e09d1b35bcb69ff4d9cecf3d0defa4b36e8-v30a923fb5c164d6cd18280c02422f75e611e8fb2",
+  );
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /TypeError combining VarsWithSources and dict in combinevars/);
+  assert.match(html, /SWE-Bench Pro<!-- --> <!-- -->public-2026-02-23/);
+  assert.match(html, /gpt-5-2025-08-07/);
+  assert.match(html, /claude-opus-4-1/);
+  assert.match(html, /SWE-Agent/);
+});
+
 test("bundles a compact index and configures the R2 corpus binding", async () => {
   const [
     packageJson,
@@ -214,6 +230,10 @@ test("bundles a compact index and configures the R2 corpus binding", async () =>
   assert.match(dataModule, /evidence-index\.json/);
   assert.doesNotMatch(dataModule, /\.jsonl\?raw/);
   assert.match(caseDataModule, /corpus\/deepswe-v1\.1\.jsonl\?raw/);
+  assert.match(
+    caseDataModule,
+    /corpus\/swe-bench-pro-public-2026-02-23\.jsonl\?raw/,
+  );
   assert.match(browser, /Search evidence cases/);
   assert.match(browser, /outcomeState/);
   assert.match(outcomeBrowser, /Search outcome configurations/);
@@ -237,11 +257,11 @@ test("compact index covers all corpus cases without outcome panels", async () =>
       `${record.identity.benchmark}:${record.identity.release}:${record.identity.native_id}`,
   );
 
-  assert.equal(index.length, 202);
-  assert.equal(new Set(identities).size, 202);
+  assert.equal(index.length, 933);
+  assert.equal(new Set(identities).size, 933);
   assert.equal(
     index.reduce((count, record) => count + record.outcome_summary.trials, 0),
-    27424,
+    33566,
   );
   assert.ok(index.every((record) => !("outcomes" in record)));
 });

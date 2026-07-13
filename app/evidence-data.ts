@@ -79,7 +79,10 @@ export function caseHref(item: Pick<EvidenceCase, "identity">) {
 }
 
 export function benchmarkLabel(benchmark: string) {
-  return benchmark === "deepswe" ? "DeepSWE" : "Terminal-Bench";
+  if (benchmark === "deepswe") return "DeepSWE";
+  if (benchmark === "terminal-bench") return "Terminal-Bench";
+  if (benchmark === "swe-bench-pro") return "SWE-Bench Pro";
+  return benchmark;
 }
 
 export function totalTrials(item: EvidenceCase | EvidenceSummary) {

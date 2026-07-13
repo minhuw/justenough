@@ -102,7 +102,9 @@ export function EvidenceBrowser({ cases }: { cases: EvidenceSummary[] }) {
             </div>
             <div>
               <dt className="metric-label">Suites</dt>
-              <dd className="metric-value">2</dd>
+              <dd className="metric-value">
+                {new Set(cases.map((item) => item.identity.benchmark)).size}
+              </dd>
             </div>
             <div>
               <dt className="metric-label">Published trials</dt>
@@ -142,6 +144,7 @@ export function EvidenceBrowser({ cases }: { cases: EvidenceSummary[] }) {
                 <option value="all">Any benchmark</option>
                 <option value="deepswe">DeepSWE</option>
                 <option value="terminal-bench">Terminal-Bench</option>
+                <option value="swe-bench-pro">SWE-Bench Pro</option>
               </select>
             </label>
 

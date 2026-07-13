@@ -12,9 +12,15 @@ function sha256(value) {
 }
 
 async function fetchOk(url) {
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`${response.status} ${response.statusText}: ${url}`);
-  return response;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const response = await fetch(url);
+    if (response.ok) return response;
+    if (attempt === 2 || (response.status !== 404 && response.status < 500)) {
+      throw new Error(`${response.status} ${response.statusText}: ${url}`);
+    }
+    await new Promise((resolve) => setTimeout(resolve, 250 * (attempt + 1)));
+  }
+  throw new Error(`Unable to fetch ${url}`);
 }
 
 const localManifest = JSON.parse(
@@ -62,8 +68,11 @@ async function validateCase() {
 
 await Promise.all(Array.from({ length: concurrency }, () => validateCase()));
 
-const home = await (await fetchOk(new URL("/", baseUrl))).text();
-if (!home.includes("202<!-- --> <!-- -->cases") || !home.includes("27424")) {
+const evidencePage = await (await fetchOk(new URL("/evidence", baseUrl))).text();
+if (
+  !evidencePage.includes("933<!-- --> <!-- -->cases") ||
+  !evidencePage.includes("33566")
+) {
   throw new Error("The deployed evidence index does not show the full corpus totals");
 }
 
@@ -77,6 +86,21 @@ const detail = await (
 ).text();
 if (!detail.includes("Fix CRLF injection in Bottle headers") || !detail.includes("grok-4.5")) {
   throw new Error("The deployed detail page is missing expected case evidence");
+}
+
+const sweBenchProDetail = await (
+  await fetchOk(
+    new URL(
+      "/evidence/swe-bench-pro/public-2026-02-23/instance_ansible__ansible-0ea40e09d1b35bcb69ff4d9cecf3d0defa4b36e8-v30a923fb5c164d6cd18280c02422f75e611e8fb2",
+      baseUrl,
+    ),
+  )
+).text();
+if (
+  !sweBenchProDetail.includes("TypeError combining VarsWithSources") ||
+  !sweBenchProDetail.includes("gpt-5-2025-08-07")
+) {
+  throw new Error("The deployed SWE-Bench Pro detail page is incomplete");
 }
 
 process.stdout.write(

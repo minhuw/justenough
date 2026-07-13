@@ -3,6 +3,15 @@ import { readdir, readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 import { difficultyFactorVocabulary } from "./profile-template.mjs";
+import {
+  loadSweBenchProResults,
+  loadSweBenchProTasks,
+  pinnedDatasetUrl,
+  pinnedResultUrl,
+  sweBenchPro,
+  sweBenchProRuns,
+  taskDigest,
+} from "./swe-bench-pro-source.mjs";
 
 const root = new URL("../", import.meta.url);
 const sourceRoot =
@@ -35,6 +44,26 @@ const releases = [
     configurations: 20,
     models: 13,
     trials: 8_902,
+  },
+  {
+    key: sweBenchPro.key,
+    benchmark: sweBenchPro.benchmark,
+    release: sweBenchPro.release,
+    file: new URL(`corpus/${sweBenchPro.key}.jsonl`, root),
+    repository: sweBenchPro.datasetRepository,
+    revision: sweBenchPro.datasetRevision,
+    checkout:
+      process.env.SWE_BENCH_PRO_RESULTS_CHECKOUT ??
+      `${sourceRoot}/swe-bench-pro`,
+    parquet:
+      process.env.SWE_BENCH_PRO_PARQUET ??
+      `${sourceRoot}/swe-bench-pro.parquet`,
+    resultsRepository: sweBenchPro.resultsRepository,
+    resultsRevision: sweBenchPro.resultsRevision,
+    records: 731,
+    configurations: 9,
+    models: 8,
+    trials: 6_142,
   },
 ];
 
@@ -232,7 +261,8 @@ function checkProfile(profile, spec, path, errors) {
   if (!['repository', 'terminal'].includes(profile.interaction)) {
     errors.push(`${path}.interaction must be repository or terminal`);
   } else if (
-    (spec.benchmark === "deepswe" && profile.interaction !== "repository") ||
+    (["deepswe", "swe-bench-pro"].includes(spec.benchmark) &&
+      profile.interaction !== "repository") ||
     (spec.benchmark === "terminal-bench" && profile.interaction !== "terminal")
   ) {
     errors.push(`${path}.interaction does not match ${spec.benchmark}`);
@@ -268,9 +298,10 @@ function checkProfile(profile, spec, path, errors) {
   if (!isObject(profile.observed_labels)) {
     errors.push(`${path}.observed_labels must be an object`);
   } else {
-    const allowed =
-      spec.benchmark === "deepswe"
-        ? ["category", "language"]
+    const allowed = spec.benchmark === "deepswe"
+      ? ["category", "language"]
+      : spec.benchmark === "swe-bench-pro"
+        ? ["repository", "language", "issue_specificity", "issue_categories"]
         : ["category", "difficulty", "tags"];
     checkKeys(profile.observed_labels, allowed, `${path}.observed_labels`, errors);
     for (const [key, value] of Object.entries(profile.observed_labels)) {
@@ -279,12 +310,12 @@ function checkProfile(profile, spec, path, errors) {
   }
 }
 
-function checkExtraction(extraction, path, errors) {
+function checkExtraction(extraction, spec, path, errors) {
   if (!checkKeys(extraction, extractionKeys, path, errors)) return;
-  if (
-    extraction.method !==
-    "frontier LLM semantic extraction with pinned-source review"
-  ) {
+  const expectedMethod = spec.benchmark === "swe-bench-pro"
+    ? "structured semantic extraction with pinned-source review"
+    : "frontier LLM semantic extraction with pinned-source review";
+  if (extraction.method !== expectedMethod) {
     errors.push(`${path}.method does not match the extraction contract`);
   }
   if (extraction.version !== "full-2") {
@@ -364,10 +395,16 @@ function checkOutcome(outcome, spec, path, errors) {
       `${path}.source_submission_url`,
       errors,
     );
+  } else if (spec.benchmark === "swe-bench-pro") {
+    checkString(
+      outcome.source_submission_url,
+      `${path}.source_submission_url`,
+      errors,
+    );
   }
 }
 
-function checkRecord(record, spec, trees, index, errors) {
+function checkRecord(record, spec, trees, sourceTask, index, errors) {
   const prefix = `${spec.key}[${index}]`;
   if (!checkKeys(record, topLevelKeys, prefix, errors)) return;
   if (record.schema_version !== "1") {
@@ -395,9 +432,11 @@ function checkRecord(record, spec, trees, index, errors) {
       );
     }
     checkString(record.revision.source_url, `${prefix}.revision.source_url`, errors);
-    const expectedSourceUrl = `${spec.repository}/blob/${spec.revision}/tasks/${record.identity?.native_id}/task.toml`;
+    const expectedSourceUrl = spec.benchmark === "swe-bench-pro"
+      ? pinnedDatasetUrl()
+      : `${spec.repository}/blob/${spec.revision}/tasks/${record.identity?.native_id}/task.toml`;
     if (record.revision.source_url !== expectedSourceUrl) {
-      errors.push(`${prefix}.revision.source_url must be the pinned task.toml URL`);
+      errors.push(`${prefix}.revision.source_url does not match the pinned task source`);
     }
     if (
       spec.benchmark === "deepswe" &&
@@ -406,10 +445,24 @@ function checkRecord(record, spec, trees, index, errors) {
     ) {
       errors.push(`${prefix}.revision.task_page must be the official v1.1 task page`);
     }
+    if (spec.benchmark === "swe-bench-pro" && sourceTask) {
+      if (record.revision.repository !== `https://github.com/${sourceTask.repo}`) {
+        errors.push(`${prefix}.revision.repository does not match the source row`);
+      }
+      if (record.revision.base_commit !== sourceTask.base_commit) {
+        errors.push(`${prefix}.revision.base_commit does not match the source row`);
+      }
+      if (
+        record.revision.dataset_ref !==
+        `ScaleAI/SWE-bench_Pro@${spec.revision}:test`
+      ) {
+        errors.push(`${prefix}.revision.dataset_ref does not match the pinned dataset`);
+      }
+    }
   }
 
   checkProfile(record.profile, spec, `${prefix}.profile`, errors);
-  checkExtraction(record.extraction, `${prefix}.extraction`, errors);
+  checkExtraction(record.extraction, spec, `${prefix}.extraction`, errors);
 
   if (checkKeys(record.outcomes, outcomesKeys, `${prefix}.outcomes`, errors)) {
     checkString(record.outcomes.source_url, `${prefix}.outcomes.source_url`, errors);
@@ -417,10 +470,18 @@ function checkRecord(record, spec, trees, index, errors) {
       errors.push(`${prefix}.outcomes.panel must be an array`);
       return;
     }
-    if (record.outcomes.panel.length !== spec.configurations) {
+    if (
+      spec.benchmark !== "swe-bench-pro" &&
+      record.outcomes.panel.length !== spec.configurations
+    ) {
       errors.push(
         `${prefix}.outcomes.panel has ${record.outcomes.panel.length} rows; expected ${spec.configurations}`,
       );
+    } else if (
+      spec.benchmark === "swe-bench-pro" &&
+      record.outcomes.panel.length > spec.configurations
+    ) {
+      errors.push(`${prefix}.outcomes.panel has more than ${spec.configurations} rows`);
     }
     record.outcomes.panel.forEach((outcome, outcomeIndex) =>
       checkOutcome(
@@ -450,9 +511,12 @@ function checkRecord(record, spec, trees, index, errors) {
         total + (Number.isInteger(outcome?.attempts) ? outcome.attempts : 0),
       0,
     );
-    if (record.outcomes.published_configurations !== spec.configurations) {
+    const expectedConfigurations = spec.benchmark === "swe-bench-pro"
+      ? record.outcomes.panel.length
+      : spec.configurations;
+    if (record.outcomes.published_configurations !== expectedConfigurations) {
       errors.push(
-        `${prefix}.outcomes.published_configurations must be ${spec.configurations}`,
+        `${prefix}.outcomes.published_configurations must be ${expectedConfigurations}`,
       );
     }
     if (record.outcomes.published_trials !== attempts) {
@@ -612,6 +676,80 @@ async function checkTerminalEvidence(submissions, errors) {
   return { jobs: jobs.length, resolved_trial_references: resolved };
 }
 
+async function checkSweBenchProEvidence(spec, records, errors) {
+  const results = await loadSweBenchProResults(spec.checkout);
+  const runsByConfiguration = new Map(
+    sweBenchProRuns.map((run) => [run.configuration, run]),
+  );
+  let matchedOutcomes = 0;
+
+  for (const [recordIndex, record] of records.entries()) {
+    const nativeId = record.identity?.native_id;
+    const expectedConfigurations = sweBenchProRuns
+      .filter((run) => typeof results.get(run.configuration)?.[nativeId] === "boolean")
+      .map((run) => run.configuration);
+    const actual = new Map(
+      (record.outcomes?.panel ?? []).map((outcome) => [
+        outcome?.configuration,
+        outcome,
+      ]),
+    );
+    const missing = expectedConfigurations.filter((value) => !actual.has(value));
+    const extra = [...actual.keys()].filter((value) => !expectedConfigurations.includes(value));
+    if (missing.length || extra.length) {
+      errors.push(
+        `${spec.key}[${recordIndex}] configurations differ from pinned result maps (missing ${missing.length}, extra ${extra.length})`,
+      );
+    }
+
+    for (const configuration of expectedConfigurations) {
+      const run = runsByConfiguration.get(configuration);
+      const outcome = actual.get(configuration);
+      if (!run || !outcome) continue;
+      const passed = results.get(configuration)[nativeId];
+      const expected = {
+        provider: run.provider,
+        model: run.model,
+        harness: "SWE-Agent",
+        effort: run.effort,
+        attempts: 1,
+        passed: passed ? 1 : 0,
+        failed: passed ? 0 : 1,
+        errored: 0,
+        excluded: 0,
+        disqualified: 0,
+        source_submission_url: pinnedResultUrl(configuration),
+      };
+      for (const [key, value] of Object.entries(expected)) {
+        if (outcome[key] !== value) {
+          errors.push(
+            `${spec.key}[${recordIndex}] ${configuration}.${key} does not match the pinned result`,
+          );
+        }
+      }
+      if (
+        run.submission_date &&
+        outcome.submission_date !== run.submission_date
+      ) {
+        errors.push(
+          `${spec.key}[${recordIndex}] ${configuration}.submission_date does not match the published run date`,
+        );
+      }
+      matchedOutcomes += 1;
+    }
+
+    const expectedSource = `${spec.resultsRepository}/tree/${spec.resultsRevision}/traj`;
+    if (record.outcomes?.source_url !== expectedSource) {
+      errors.push(`${spec.key}[${recordIndex}].outcomes.source_url is not pinned`);
+    }
+  }
+
+  return {
+    result_files: sweBenchProRuns.length,
+    matched_task_outcomes: matchedOutcomes,
+  };
+}
+
 function summarizeRelease(records) {
   const panel = records.flatMap((record) => record.outcomes?.panel ?? []);
   return {
@@ -630,15 +768,34 @@ export async function validateCorpus() {
   const errors = [];
   const recordsByRelease = new Map();
   const treesByRelease = new Map();
+  const sourceTasksByRelease = new Map();
   let terminalSubmissions = [];
 
   for (const spec of releases) {
     try {
-      const trees = expectedTaskTrees(spec);
+      let trees;
+      if (spec.benchmark === "swe-bench-pro") {
+        const head = git(spec.checkout, ["rev-parse", "HEAD"]);
+        if (head !== spec.resultsRevision) {
+          throw new Error(
+            `${spec.checkout} is at ${head}; expected ${spec.resultsRevision}`,
+          );
+        }
+        const tasks = loadSweBenchProTasks(spec.parquet);
+        sourceTasksByRelease.set(
+          spec.key,
+          new Map(tasks.map((task) => [task.instance_id, task])),
+        );
+        trees = new Map(
+          tasks.map((task) => [task.instance_id, taskDigest(task)]),
+        );
+      } else {
+        trees = expectedTaskTrees(spec);
+      }
       treesByRelease.set(spec.key, trees);
       if (trees.size !== spec.records) {
         errors.push(
-          `${spec.key} pinned repository has ${trees.size} task trees; expected ${spec.records}`,
+          `${spec.key} pinned source has ${trees.size} case identities; expected ${spec.records}`,
         );
       }
     } catch (error) {
@@ -664,6 +821,7 @@ export async function validateCorpus() {
   for (const spec of releases) {
     const records = recordsByRelease.get(spec.key) ?? [];
     const trees = treesByRelease.get(spec.key) ?? new Map();
+    const sourceTasks = sourceTasksByRelease.get(spec.key) ?? new Map();
     if (records.length !== spec.records) {
       errors.push(`${spec.key} has ${records.length} records; expected ${spec.records}`);
     }
@@ -690,7 +848,14 @@ export async function validateCorpus() {
       const identity = `${record.identity?.benchmark}/${record.identity?.release}/${record.identity?.native_id}`;
       if (allIdentities.has(identity)) errors.push(`duplicate identity ${identity}`);
       allIdentities.add(identity);
-      checkRecord(record, spec, trees, index, errors);
+      checkRecord(
+        record,
+        spec,
+        trees,
+        sourceTasks.get(record.identity?.native_id),
+        index,
+        errors,
+      );
     });
 
     const summary = summarizeRelease(records);
@@ -767,6 +932,23 @@ export async function validateCorpus() {
     terminalEvidence = await checkTerminalEvidence(terminalSubmissions, errors);
   }
 
+  let sweBenchProEvidence = { result_files: 0, matched_task_outcomes: 0 };
+  const sweBenchProSpec = releases.find(
+    (spec) => spec.benchmark === "swe-bench-pro",
+  );
+  const sweBenchProRecords = recordsByRelease.get(sweBenchPro.key) ?? [];
+  if (sweBenchProSpec && sweBenchProRecords.length === sweBenchProSpec.records) {
+    try {
+      sweBenchProEvidence = await checkSweBenchProEvidence(
+        sweBenchProSpec,
+        sweBenchProRecords,
+        errors,
+      );
+    } catch (error) {
+      errors.push(`swe-bench-pro outcomes: ${error.message}`);
+    }
+  }
+
   return {
     ok: errors.length === 0,
     validation_version: "1",
@@ -783,6 +965,7 @@ export async function validateCorpus() {
     ),
     corpora: summaries,
     terminal_evidence: terminalEvidence,
+    swe_bench_pro_evidence: sweBenchProEvidence,
     errors,
   };
 }
