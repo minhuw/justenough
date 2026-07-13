@@ -56,6 +56,13 @@ export type ConfigurationEvidence = {
   lowerBound: number;
 };
 
+export type JudgeSelection = {
+  decision: "recommend" | "abstain";
+  configurationKey?: string;
+  citedCaseIds: string[];
+  rationale: string;
+};
+
 export type RoutingResult = {
   status: "recommended" | "abstained";
   profile: TargetTaskProfile;
@@ -73,9 +80,11 @@ export type RoutingResult = {
   };
   abstentionReasons: string[];
   warnings: string[];
+  judge?: JudgeSelection & { verified: true };
   analysis: {
     profiler: "llm" | "local";
     retrieval: Array<"lexical" | "facets" | "embedding" | "llm_rerank">;
+    selector: "llm_judge" | "deterministic";
   };
 };
 
@@ -85,4 +94,3 @@ export type EmbeddingIndex = {
   dimensions: number | null;
   records: Array<{ case_id: string; embedding: number[] }>;
 };
-

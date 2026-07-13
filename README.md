@@ -9,18 +9,29 @@ heuristics, lexical retrieval, and case facets. It uses a conservative 90%
 one-sided Wilson lower bound and abstains when similarity, coverage, repeated
 trials, or the requested reliability target are insufficient.
 
-## LLM and semantic retrieval
+## LLM judge and semantic retrieval
 
-For production task profiling, semantic retrieval, and LLM reranking:
+For production task profiling, semantic retrieval, LLM reranking, and final
+selection:
 
 1. Copy `.env.example` to `.env.local` and set `OPENAI_API_KEY`.
 2. Run `npm run data:build-retrieval-index` to embed the versioned corpus.
 3. Set `JUSTENOUGH_ENABLE_LLM=true` when serving or deploying.
 
-The LLM extracts the target profile and judges case similarity; it never emits
-the routing recommendation. Current outcomes do not normalize cost or latency,
-so reasoning effort is explicitly a temporary routing proxy rather than an
-economic comparison.
+For Cloudflare or Sites, configure `OPENAI_API_KEY` as a production secret and
+`JUSTENOUGH_ENABLE_LLM` as a runtime variable in the host; never commit the key.
+Keep an LLM-enabled route private or add rate limits before exposing it publicly,
+because one routing request can make up to three model calls.
+
+The final judge sees opaque IDs for configurations in the lowest-effort tier
+that already passes the fixed evidence gates. It may propose one route or
+abstain, and must cite the complete supporting case set. A deterministic
+verifier checks its candidate, citations, trial counts, bounds, and effort-tier
+eligibility before accepting the proposal. If the judge is unavailable or
+invalid, the credential-free deterministic selector is used instead.
+
+Current outcomes do not normalize cost or latency, so reasoning effort is
+explicitly a temporary routing proxy rather than an economic comparison.
 
 ## Development
 

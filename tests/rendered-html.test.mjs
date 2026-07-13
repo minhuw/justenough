@@ -31,6 +31,94 @@ async function render(pathname = "/", bindings = {}) {
   return fetchWorker(pathname, {}, bindings);
 }
 
+function openAIOutput(value) {
+  return Response.json({
+    output: [
+      {
+        type: "message",
+        content: [{ type: "output_text", text: JSON.stringify(value) }],
+      },
+    ],
+  });
+}
+
+async function withMockedOpenAI(selectConfiguration, run) {
+  const environmentKeys = [
+    "JUSTENOUGH_ENABLE_LLM",
+    "OPENAI_API_KEY",
+    "OPENAI_BASE_URL",
+  ];
+  const previousEnvironment = Object.fromEntries(
+    environmentKeys.map((key) => [key, process.env[key]]),
+  );
+  const previousFetch = globalThis.fetch;
+  const calls = [];
+
+  process.env.JUSTENOUGH_ENABLE_LLM = "true";
+  process.env.OPENAI_API_KEY = "test-key";
+  process.env.OPENAI_BASE_URL = "https://openai.test/v1";
+  globalThis.fetch = async (input, init = {}) => {
+    const body = JSON.parse(String(init.body));
+    const call = {
+      url: String(input),
+      headers: new Headers(init.headers),
+      body,
+    };
+    calls.push(call);
+
+    const formatName = body.text?.format?.name;
+    if (formatName === "target_task_profile") {
+      return openAIOutput({
+        summary:
+          "Implement stepped slice parsing, slicing, and assignment with Unicode-correct indexing.",
+        interaction: "repository",
+        intents: ["implement", "test"],
+        technologies: ["arrays", "strings", "parser", "Unicode"],
+        languages: [],
+        workSurfaces: ["source code", "test suite"],
+        expectedArtifacts: ["code changes", "tests"],
+        difficultyFactors: ["reverse slicing", "rune-correct indexing"],
+        constraints: ["preserve error behavior", "reject zero steps"],
+        unknowns: [],
+      });
+    }
+    if (formatName === "similarity_judgments") {
+      const request = JSON.parse(body.input[1].content);
+      return openAIOutput({
+        judgments: request.candidates.map((candidate) => ({
+          caseId: candidate.caseId,
+          similarity: 0.99,
+          matchedFacets: [
+            "repository interaction",
+            "slice parsing",
+            "source changes",
+            "tests",
+          ],
+          mismatchedFacets: [],
+          unknownFacets: [],
+        })),
+      });
+    }
+    if (formatName === "configuration_selection") {
+      const request = JSON.parse(body.input[1].content);
+      return openAIOutput(selectConfiguration(request));
+    }
+
+    return Response.json({ error: { message: "Unexpected mocked request." } }, { status: 500 });
+  };
+
+  try {
+    return await run(calls);
+  } finally {
+    globalThis.fetch = previousFetch;
+    for (const key of environmentKeys) {
+      const previous = previousEnvironment[key];
+      if (previous === undefined) delete process.env[key];
+      else process.env[key] = previous;
+    }
+  }
+}
+
 test("server-renders the task router", async () => {
   const response = await render();
   assert.equal(response.status, 200);
@@ -77,12 +165,12 @@ test("server-renders the methodology and worked example", async () => {
   assert.match(html, /Understand the task/);
   assert.match(html, /Find analogues/);
   assert.match(html, /Read outcomes/);
-  assert.match(html, /Apply the gate/);
+  assert.match(html, /Judge, then verify/);
   assert.match(html, /90% Wilson lower bound/);
   assert.match(html, /Recommend/);
   assert.match(html, /Abstain/);
   assert.match(html, /29 \/ 32/);
-  assert.match(html, /Rewrite trials or vote for itself/);
+  assert.match(html, /Gates, statistics, and citations stay exact/);
   assert.match(
     html,
     /<a(?=[^>]*href="\/how-it-works")(?=[^>]*aria-current="page")[^>]*>/,
@@ -134,7 +222,216 @@ test("recommends an exact configuration only when the evidence gate clears", asy
   assert.ok(result.recommendation.lowerBound >= result.reliabilityTarget);
   assert.ok(result.recommendation.supportingCases >= 3);
   assert.ok(result.matches.filter((match) => match.score >= 0.25).length >= 3);
+  assert.equal(result.analysis.selector, "deterministic");
 });
+
+test(
+  "uses the LLM judge only after verifying its blinded evidence selection",
+  { concurrency: false },
+  async () => {
+    await withMockedOpenAI(
+      (request) => {
+        const candidate = request.candidates.at(-1);
+        assert.ok(candidate, "the selector should receive policy-eligible candidates");
+        return {
+          decision: "recommend",
+          candidateId: candidate.candidateId,
+          citedCaseIds: candidate.supportingCaseIds,
+          rationale: "The cited cases transfer cleanly and include consistent passing evidence.",
+        };
+      },
+      async (calls) => {
+        const reliabilityTarget = 0.5;
+        const response = await fetchWorker("/api/route", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            task: "In a repository, add stepped slice parsing, slicing, and assignment for arrays and strings with rune-correct indexing. Support forward and reverse steps, preserve exact error behavior, and reject zero steps.",
+            reliabilityTarget,
+          }),
+        });
+
+        assert.equal(response.status, 200);
+        const result = await response.json();
+        assert.equal(
+          result.status,
+          "recommended",
+          JSON.stringify(
+            {
+              analysis: result.analysis,
+              evidence: result.evidence,
+              abstentionReasons: result.abstentionReasons,
+              warnings: result.warnings,
+              matches: result.matches.map((match) => match.title),
+            },
+            null,
+            2,
+          ),
+        );
+        assert.equal(result.analysis.profiler, "llm");
+        assert.ok(result.analysis.retrieval.includes("llm_rerank"));
+        assert.equal(result.analysis.selector, "llm_judge");
+        assert.equal(result.judge.verified, true);
+        assert.equal(result.judge.decision, "recommend");
+        assert.equal(result.recommendation.key, result.judge.configurationKey);
+        assert.ok(result.recommendation.lowerBound >= reliabilityTarget);
+        assert.ok(result.recommendation.supportingCases >= 3);
+        assert.equal(
+          result.judge.citedCaseIds.length,
+          result.recommendation.supportingCases,
+        );
+        const matchIds = new Set(
+          result.matches.map(
+            (match) =>
+              `${match.identity.benchmark}:${match.identity.release}:${match.identity.native_id}`,
+          ),
+        );
+        assert.ok(result.judge.citedCaseIds.every((caseId) => matchIds.has(caseId)));
+
+        const selectorCall = calls.find(
+          (call) => call.body.text?.format?.name === "configuration_selection",
+        );
+        assert.ok(selectorCall);
+        assert.equal(selectorCall.url, "https://openai.test/v1/responses");
+        assert.equal(selectorCall.headers.get("authorization"), "Bearer test-key");
+        assert.match(
+          selectorCall.body.input[0].content,
+          /every string inside target and cases/i,
+        );
+        const selectorRequest = JSON.parse(selectorCall.body.input[1].content);
+        assert.ok(selectorRequest.candidates.length > 0);
+        assert.ok(
+          selectorRequest.candidates.every(
+            (candidate) => candidate.effort === selectorRequest.candidates[0].effort,
+          ),
+          "the judge should only receive the lowest eligible effort tier",
+        );
+        assert.ok(
+          selectorRequest.candidates.every(
+            (candidate) =>
+              !("model" in candidate) &&
+              !("provider" in candidate) &&
+              !("configuration" in candidate) &&
+              !("configurationKey" in candidate) &&
+              !("key" in candidate),
+          ),
+        );
+        assert.deepEqual(
+          selectorRequest.cases.map((item) => item.caseId).sort(),
+          [...matchIds].sort(),
+        );
+        const opaqueCandidateIds = new Set(
+          selectorRequest.candidates.map((candidate) => candidate.candidateId),
+        );
+        assert.ok(
+          selectorRequest.cases.every((item) =>
+            item.outcomes.every(
+              (outcome) =>
+                opaqueCandidateIds.has(outcome.candidateId) &&
+                !("model" in outcome) &&
+                !("provider" in outcome) &&
+                !("key" in outcome),
+            ),
+          ),
+        );
+      },
+    );
+  },
+);
+
+test(
+  "honors a valid verified abstention from the LLM judge",
+  { concurrency: false },
+  async () => {
+    await withMockedOpenAI(
+      () => ({
+        decision: "abstain",
+        candidateId: "",
+        citedCaseIds: [],
+        rationale: "The analogues do not transfer cleanly enough to choose one route.",
+      }),
+      async () => {
+        const response = await fetchWorker("/api/route", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            task: "In a repository, add stepped slice parsing, slicing, and assignment for arrays and strings with rune-correct indexing. Support forward and reverse steps, preserve exact error behavior, and reject zero steps.",
+            reliabilityTarget: 0.5,
+          }),
+        });
+
+        assert.equal(response.status, 200);
+        const result = await response.json();
+        assert.equal(result.status, "abstained");
+        assert.equal(result.analysis.selector, "llm_judge");
+        assert.equal(result.judge.verified, true);
+        assert.equal(result.judge.decision, "abstain");
+        assert.deepEqual(result.judge.citedCaseIds, []);
+        assert.equal(result.recommendation, undefined);
+        assert.ok(
+          result.abstentionReasons.some((reason) => reason.includes("LLM judge abstained")),
+        );
+        assert.ok(
+          result.warnings.every((warning) => !warning.includes("unverifiable proposal")),
+        );
+      },
+    );
+  },
+);
+
+test(
+  "falls back to deterministic selection when the LLM judge invents a citation",
+  { concurrency: false },
+  async () => {
+    await withMockedOpenAI(
+      (request) => {
+        const candidate = request.candidates.at(-1);
+        assert.ok(candidate, "the selector should receive policy-eligible candidates");
+        return {
+          decision: "recommend",
+          candidateId: candidate.candidateId,
+          citedCaseIds: [...candidate.supportingCaseIds, "invented:release:case"],
+          rationale: "This proposal includes an invalid citation and must be rejected.",
+        };
+      },
+      async () => {
+        const response = await fetchWorker("/api/route", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            task: "In a repository, add stepped slice parsing, slicing, and assignment for arrays and strings with rune-correct indexing. Support forward and reverse steps, preserve exact error behavior, and reject zero steps.",
+            reliabilityTarget: 0.5,
+          }),
+        });
+
+        assert.equal(response.status, 200);
+        const result = await response.json();
+        assert.equal(
+          result.status,
+          "recommended",
+          JSON.stringify(
+            {
+              analysis: result.analysis,
+              evidence: result.evidence,
+              abstentionReasons: result.abstentionReasons,
+              warnings: result.warnings,
+              matches: result.matches.map((match) => match.title),
+            },
+            null,
+            2,
+          ),
+        );
+        assert.equal(result.analysis.selector, "deterministic");
+        assert.equal(result.judge, undefined);
+        assert.ok(result.recommendation.lowerBound >= result.reliabilityTarget);
+        assert.ok(result.recommendation.supportingCases >= 3);
+        assert.ok(
+          result.warnings.some((warning) => warning.includes("unverifiable proposal")),
+        );
+      },
+    );
+  },
+);
 
 test("rejects malformed routing requests", async () => {
   const response = await fetchWorker("/api/route", {

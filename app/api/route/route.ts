@@ -2,15 +2,18 @@ import retrievalIndexJson from "@/fixtures/retrieval-index.json";
 import { listEvidenceCases } from "@/app/evidence-case-data";
 import {
   buildCorpusVocabulary,
+  buildRoutingEvidence,
   caseId,
   makeRoutingDecision,
   profileTaskLocally,
   retrieveEvidence,
   targetSearchDocument,
+  verifyJudgeSelection,
 } from "@/lib/routing/core";
 import { OpenAIRoutingModels } from "@/lib/routing/openai";
 import type {
   EmbeddingIndex,
+  JudgeSelection,
   RerankJudgment,
   RoutingResult,
 } from "@/lib/routing/types";
@@ -130,14 +133,34 @@ export async function POST(request: Request) {
     rerankJudgments: judgments,
     limit: 8,
   });
+  const evidence = buildRoutingEvidence({
+    matches,
+    reliabilityTarget,
+    casesById,
+  });
+  let judgeSelection: JudgeSelection | undefined;
+  if (models && evidence.evidenceReady && evidence.judgeCandidates.length > 0) {
+    try {
+      judgeSelection = verifyJudgeSelection(
+        evidence,
+        await models.selectConfiguration(profile, reliabilityTarget, evidence),
+      );
+    } catch {
+      warnings.push(
+        "The LLM judge was unavailable or returned an unverifiable proposal; deterministic selection was used.",
+      );
+    }
+  } else if (!models && evidence.evidenceReady && evidence.judgeCandidates.length > 0) {
+    warnings.push("The LLM judge is disabled; deterministic selection was used.");
+  }
   const result = makeRoutingDecision({
     profile,
-    matches,
+    evidence,
     reliabilityTarget,
     profiler,
     retrieval,
     warnings,
-    casesById,
+    judgeSelection,
   });
 
   return Response.json(result, {

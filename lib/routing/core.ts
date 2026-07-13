@@ -4,6 +4,7 @@ import type {
   ConfigurationEvidence,
   EmbeddingIndex,
   EvidenceMatch,
+  JudgeSelection,
   RerankJudgment,
   RoutingResult,
   TargetTaskProfile,
@@ -342,7 +343,7 @@ export function retrieveEvidence({
     .slice(0, limit);
 }
 
-function configurationKey(outcome: Outcome) {
+export function configurationKey(outcome: Outcome) {
   return [
     outcome.provider,
     outcome.model,
@@ -368,14 +369,13 @@ export function wilsonLowerBound(passed: number, attempts: number, z = 1.645) {
   return Math.max(0, (center - margin) / denominator);
 }
 
-function aggregateConfigurations(matches: Array<EvidenceMatch & { item?: EvidenceCase }>) {
+function aggregateConfigurations(matches: Array<EvidenceMatch & { item: EvidenceCase }>) {
   const aggregates = new Map<
     string,
     ConfigurationEvidence & { caseIds: Set<string> }
   >();
 
   for (const match of matches) {
-    if (!match.item) continue;
     for (const outcome of match.item.outcomes.panel) {
       if (outcome.attempts <= 0) continue;
       const key = configurationKey(outcome);
@@ -402,10 +402,13 @@ function aggregateConfigurations(matches: Array<EvidenceMatch & { item?: Evidenc
   }
 
   return [...aggregates.values()].map(({ caseIds, ...aggregate }) => ({
-    ...aggregate,
-    supportingCases: caseIds.size,
-    observedRate: aggregate.attempts > 0 ? aggregate.passed / aggregate.attempts : 0,
-    lowerBound: wilsonLowerBound(aggregate.passed, aggregate.attempts),
+    evidence: {
+      ...aggregate,
+      supportingCases: caseIds.size,
+      observedRate: aggregate.attempts > 0 ? aggregate.passed / aggregate.attempts : 0,
+      lowerBound: wilsonLowerBound(aggregate.passed, aggregate.attempts),
+    },
+    caseIds: [...caseIds].sort(),
   }));
 }
 
@@ -413,27 +416,34 @@ function effortRank(effort: string) {
   return EFFORT_ORDER[normalized(effort)] ?? 51;
 }
 
-export function makeRoutingDecision({
-  profile,
+export type RoutingEvidenceContext = {
+  selectedMatches: Array<EvidenceMatch & { item: EvidenceCase }>;
+  candidates: ConfigurationEvidence[];
+  eligible: ConfigurationEvidence[];
+  judgeCandidates: ConfigurationEvidence[];
+  candidateCaseIds: Map<string, string[]>;
+  evidenceReady: boolean;
+  abstentionReasons: string[];
+  meanSimilarity: number;
+  meanFacetCoverage: number;
+};
+
+export function buildRoutingEvidence({
   matches,
   reliabilityTarget,
-  profiler,
-  retrieval,
-  warnings = [],
   casesById,
 }: {
-  profile: TargetTaskProfile;
   matches: EvidenceMatch[];
   reliabilityTarget: number;
-  profiler: "llm" | "local";
-  retrieval: RoutingResult["analysis"]["retrieval"];
-  warnings?: string[];
   casesById: Map<string, EvidenceCase>;
-}): RoutingResult {
+}): RoutingEvidenceContext {
   const selectedMatches = matches
     .filter((match) => match.score >= DEFAULT_POLICY.minMatchSimilarity)
     .slice(0, DEFAULT_POLICY.maximumMatches)
-    .map((match) => ({ ...match, item: casesById.get(caseId(match)) }));
+    .flatMap((match) => {
+      const item = casesById.get(caseId(match));
+      return item ? [{ ...match, item }] : [];
+    });
   const meanSimilarity = selectedMatches.length
     ? selectedMatches.reduce((sum, match) => sum + match.score, 0) /
       selectedMatches.length
@@ -442,7 +452,11 @@ export function makeRoutingDecision({
     ? selectedMatches.reduce((sum, match) => sum + match.facetCoverage, 0) /
       selectedMatches.length
     : 0;
-  const candidates = aggregateConfigurations(selectedMatches);
+  const aggregateRows = aggregateConfigurations(selectedMatches);
+  const candidates = aggregateRows.map((row) => row.evidence);
+  const candidateCaseIds = new Map(
+    aggregateRows.map((row) => [row.evidence.key, row.caseIds]),
+  );
   const qualifiedMatches = selectedMatches.filter(
     (match) => match.score >= DEFAULT_POLICY.qualifiedMatchSimilarity,
   ).length;
@@ -464,7 +478,14 @@ export function makeRoutingDecision({
         right.observedRate - left.observedRate ||
         left.key.localeCompare(right.key),
     );
-  const recommendation = evidenceReady ? eligible[0] : undefined;
+  const minimumEligibleEffort = eligible[0]
+    ? effortRank(eligible[0].effort)
+    : undefined;
+  const judgeCandidates = minimumEligibleEffort === undefined
+    ? []
+    : eligible.filter(
+        (candidate) => effortRank(candidate.effort) === minimumEligibleEffort,
+      );
   const abstentionReasons: string[] = [];
 
   if (selectedMatches.length < DEFAULT_POLICY.minEvidenceCases) {
@@ -485,8 +506,108 @@ export function makeRoutingDecision({
     );
   }
 
+  return {
+    selectedMatches,
+    candidates,
+    eligible,
+    judgeCandidates,
+    candidateCaseIds,
+    evidenceReady,
+    abstentionReasons,
+    meanSimilarity,
+    meanFacetCoverage,
+  };
+}
+
+export function verifyJudgeSelection(
+  evidence: RoutingEvidenceContext,
+  selection: JudgeSelection,
+): JudgeSelection {
+  if (!selection || typeof selection !== "object") {
+    throw new Error("The judge did not return a selection object.");
+  }
+  const rationale = typeof selection.rationale === "string"
+    ? selection.rationale.trim()
+    : "";
+  if (!rationale || rationale.length > 1_000) {
+    throw new Error("The judge rationale must contain between 1 and 1,000 characters.");
+  }
+  if (!Array.isArray(selection.citedCaseIds)) {
+    throw new Error("The judge did not return evidence citations.");
+  }
+
+  if (selection.decision === "abstain") {
+    if (selection.configurationKey || selection.citedCaseIds.length > 0) {
+      throw new Error("An abstention cannot name a configuration or cite supporting cases.");
+    }
+    return { decision: "abstain", citedCaseIds: [], rationale };
+  }
+  if (selection.decision !== "recommend" || typeof selection.configurationKey !== "string") {
+    throw new Error("The judge returned an invalid decision.");
+  }
+  if (!evidence.judgeCandidates.some((candidate) => candidate.key === selection.configurationKey)) {
+    throw new Error(
+      "The judge selected a configuration outside the lowest policy-eligible effort tier.",
+    );
+  }
+  const citedCaseIds = selection.citedCaseIds.every((id) => typeof id === "string")
+    ? [...selection.citedCaseIds].sort()
+    : [];
+  if (new Set(citedCaseIds).size !== citedCaseIds.length) {
+    throw new Error("The judge returned duplicate evidence citations.");
+  }
+  const expectedCaseIds = evidence.candidateCaseIds.get(selection.configurationKey) ?? [];
+  if (
+    citedCaseIds.length !== expectedCaseIds.length ||
+    citedCaseIds.some((id, index) => id !== expectedCaseIds[index])
+  ) {
+    throw new Error("The judge citations do not exactly match the selected configuration's evidence.");
+  }
+
+  return {
+    decision: "recommend",
+    configurationKey: selection.configurationKey,
+    citedCaseIds,
+    rationale,
+  };
+}
+
+export function makeRoutingDecision({
+  profile,
+  evidence,
+  reliabilityTarget,
+  profiler,
+  retrieval,
+  warnings = [],
+  judgeSelection,
+}: {
+  profile: TargetTaskProfile;
+  evidence: RoutingEvidenceContext;
+  reliabilityTarget: number;
+  profiler: "llm" | "local";
+  retrieval: RoutingResult["analysis"]["retrieval"];
+  warnings?: string[];
+  judgeSelection?: JudgeSelection;
+}): RoutingResult {
+  const verifiedJudge = judgeSelection
+    ? verifyJudgeSelection(evidence, judgeSelection)
+    : undefined;
+  const recommendation = evidence.evidenceReady
+    ? verifiedJudge?.decision === "abstain"
+      ? undefined
+      : verifiedJudge?.decision === "recommend"
+        ? evidence.eligible.find(
+            (candidate) => candidate.key === verifiedJudge.configurationKey,
+          )
+        : evidence.eligible[0]
+    : undefined;
+  const abstentionReasons = [...evidence.abstentionReasons];
+  if (evidence.evidenceReady && verifiedJudge?.decision === "abstain") {
+    abstentionReasons.push(`LLM judge abstained: ${verifiedJudge.rationale}`);
+  }
+
   const lowerEffortAlternative = recommendation
-    ? candidates
+    ? evidence.candidates
         .filter(
           (candidate) =>
             effortRank(candidate.effort) < effortRank(recommendation.effort) &&
@@ -499,7 +620,7 @@ export function makeRoutingDecision({
         )[0]
     : undefined;
   const higherEffortAlternative = recommendation
-    ? eligible
+    ? evidence.eligible
         .filter(
           (candidate) => effortRank(candidate.effort) > effortRank(recommendation.effort),
         )
@@ -518,7 +639,7 @@ export function makeRoutingDecision({
     recommendation,
     lowerEffortAlternative,
     higherEffortAlternative,
-    matches: selectedMatches.map((match) => ({
+    matches: evidence.selectedMatches.map((match) => ({
       identity: match.identity,
       href: match.href,
       title: match.title,
@@ -531,17 +652,22 @@ export function makeRoutingDecision({
       mismatchedFacets: match.mismatchedFacets,
       unknownFacets: match.unknownFacets,
     })),
-    candidatesEvaluated: candidates.length,
+    candidatesEvaluated: evidence.candidates.length,
     evidence: {
-      meanSimilarity,
-      meanFacetCoverage,
-      supportingCases: selectedMatches.length,
+      meanSimilarity: evidence.meanSimilarity,
+      meanFacetCoverage: evidence.meanFacetCoverage,
+      supportingCases: evidence.selectedMatches.length,
     },
     abstentionReasons,
     warnings: unique([
       ...warnings,
       "Effort labels are a routing proxy, not a cross-provider cost or latency measurement.",
     ]),
-    analysis: { profiler, retrieval },
+    ...(verifiedJudge ? { judge: { ...verifiedJudge, verified: true as const } } : {}),
+    analysis: {
+      profiler,
+      retrieval,
+      selector: verifiedJudge ? "llm_judge" : "deterministic",
+    },
   };
 }

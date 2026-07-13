@@ -57,16 +57,16 @@ const workflow = [
   },
   {
     number: "04",
-    label: "Decide",
-    title: "Apply the gate",
-    method: "Fixed statistical policy",
-    output: "coverage + conservative reliability",
+    label: "Select",
+    title: "Judge, then verify",
+    method: "Blinded LLM judge + fixed policy",
+    output: "proposal · citations · verified route",
     example: {
-      label: "Example decision",
-      title: "70% reliability target",
+      label: "Example judge proposal",
+      title: "Choose candidate-02",
       facts: [
-        ["90% lower bound", "79%"],
-        ["Result", "Eligible"],
+        ["Citations", "8 / 8 cases"],
+        ["Verifier", "Eligible · complete"],
       ],
     },
   },
@@ -83,8 +83,8 @@ export default function HowItWorksPage() {
             From a task description to an evidence-backed route.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-            The model interprets. Benchmarks supply outcomes. A fixed gate recommends—or
-            admits there is not enough evidence.
+            The model interprets, then judges blinded routes in the lowest eligible
+            effort tier. Benchmarks and a fixed verifier keep the evidence constraints exact.
           </p>
         </section>
 
@@ -131,6 +131,7 @@ export default function HowItWorksPage() {
                       <div className="mt-3 space-y-1 font-mono text-[10px] text-muted-foreground">
                         <p>coverage ≥ 3 cases</p>
                         <p>90% Wilson lower bound ≥ target</p>
+                        <p>citations = complete support set</p>
                       </div>
                     ) : null}
                     <button
@@ -179,14 +180,14 @@ export default function HowItWorksPage() {
                   <p className="section-label text-positive">Eligible</p>
                   <h3 className="mt-2 font-semibold">Recommend</h3>
                   <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                    Lowest-effort route that clears the target.
+                    A verified route that clears the target.
                   </p>
                 </div>
                 <div className="border-t border-border p-4 sm:p-5">
                   <p className="section-label text-warning">Insufficient</p>
                   <h3 className="mt-2 font-semibold">Abstain</h3>
                   <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                    Show which evidence is missing.
+                    Show the judge rationale or missing evidence.
                   </p>
                 </div>
               </article>
@@ -194,12 +195,12 @@ export default function HowItWorksPage() {
 
             <div className="mt-5 grid gap-2 border-l-2 border-enough pl-4 text-xs leading-5 text-muted-foreground sm:grid-cols-2 sm:gap-6">
               <p>
-                <strong className="text-foreground">LLM judgment:</strong> task profiling,
-                optional reranking, and explanation.
+                <strong className="text-foreground">LLM judgment:</strong> profile, rerank,
+                then propose among blinded lowest-effort eligible routes—or abstain.
               </p>
               <p>
-                <strong className="text-foreground">Evidence authority:</strong> published
-                outcomes and the fixed eligibility policy.
+                <strong className="text-foreground">Deterministic authority:</strong> verify
+                outcomes, gates, effort tier, statistics, and complete citations.
               </p>
             </div>
           </figure>
@@ -257,19 +258,19 @@ export default function HowItWorksPage() {
             <article className="bg-surface p-5 sm:p-6">
               <p className="eyebrow">The LLM can</p>
               <h2 className="mt-2 text-xl font-semibold tracking-[-0.025em]">
-                Interpret, rerank, explain.
+                Interpret, rerank, propose—or abstain.
               </h2>
               <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                It helps connect the user’s prose to safe benchmark summaries.
+                It judges opaque candidate IDs and must cite every supporting case.
               </p>
             </article>
             <article className="bg-surface p-5 sm:p-6">
-              <p className="eyebrow">The LLM cannot</p>
+              <p className="eyebrow">The verifier ensures</p>
               <h2 className="mt-2 text-xl font-semibold tracking-[-0.025em]">
-                Rewrite trials or vote for itself.
+                Gates, statistics, and citations stay exact.
               </h2>
               <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                Counts, bounds, and route eligibility remain deterministic.
+                If the judge is unavailable or invalid, deterministic selection takes over.
               </p>
             </article>
           </div>

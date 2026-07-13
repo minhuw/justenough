@@ -17,6 +17,10 @@ function similarityLabel(value: number) {
   return "weak match";
 }
 
+function matchCaseId(match: RoutingResult["matches"][number]) {
+  return `${match.identity.benchmark}:${match.identity.release}:${match.identity.native_id}`;
+}
+
 function ConfigurationCard({
   configuration,
   label,
@@ -69,6 +73,16 @@ export function TaskRouter() {
   const [result, setResult] = useState<RoutingResult>();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const citedCaseIds = new Set(result?.judge?.citedCaseIds ?? []);
+  const visibleMatches = result
+    ? result.judge?.decision === "recommend"
+      ? [...result.matches].sort(
+          (left, right) =>
+            Number(citedCaseIds.has(matchCaseId(right))) -
+            Number(citedCaseIds.has(matchCaseId(left))),
+        )
+      : result.matches.slice(0, 5)
+    : [];
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -179,9 +193,25 @@ export function TaskRouter() {
                   </h2>
                 </div>
                 <p className="font-mono text-xs text-muted-foreground">
+                  {result.analysis.selector === "llm_judge"
+                    ? "LLM judge · policy verified"
+                    : "Deterministic selector"}
+                  {" · "}
                   {result.evidence.supportingCases} cases · {result.candidatesEvaluated} configurations
                 </p>
               </div>
+
+              {result.judge ? (
+                <div className="mt-5 border-l-2 border-enough bg-surface px-4 py-3">
+                  <p className="section-label">
+                    Judge {result.judge.decision} · {result.judge.citedCaseIds.length}{" "}
+                    {result.judge.citedCaseIds.length === 1 ? "case" : "cases"} cited · policy verified
+                  </p>
+                  <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+                    {result.judge.rationale}
+                  </p>
+                </div>
+              ) : null}
 
               {result.recommendation ? (
                 <div className="mt-6 grid gap-4 lg:grid-cols-3">
@@ -217,26 +247,30 @@ export function TaskRouter() {
                 <div>
                   <h3 className="text-sm font-semibold">Closest evidence</h3>
                   <div className="mt-3 divide-y divide-border border-y border-border">
-                    {result.matches.slice(0, 5).map((match) => (
-                      <a
-                        className="group flex items-start justify-between gap-4 py-3"
-                        href={match.href}
-                        key={match.href}
-                      >
-                        <span>
-                          <span className="text-sm font-medium group-hover:underline">
-                            {match.title}
+                    {visibleMatches.map((match) => {
+                      const cited = citedCaseIds.has(matchCaseId(match));
+                      return (
+                        <a
+                          className="group flex items-start justify-between gap-4 py-3"
+                          href={match.href}
+                          key={match.href}
+                        >
+                          <span>
+                            <span className="text-sm font-medium group-hover:underline">
+                              {match.title}
+                            </span>
+                            <span className="mt-1 block text-xs text-muted-foreground">
+                              {cited ? "Judge citation · " : ""}
+                              {match.matchedFacets.join(" · ") || "text similarity only"}
+                            </span>
                           </span>
-                          <span className="mt-1 block text-xs text-muted-foreground">
-                            {match.matchedFacets.join(" · ") || "text similarity only"}
+                          <span className="flex shrink-0 items-center gap-1 font-mono text-xs text-muted-foreground">
+                            {similarityLabel(match.score)}
+                            <ArrowUpRight aria-hidden="true" className="size-3.5" />
                           </span>
-                        </span>
-                        <span className="flex shrink-0 items-center gap-1 font-mono text-xs text-muted-foreground">
-                          {similarityLabel(match.score)}
-                          <ArrowUpRight aria-hidden="true" className="size-3.5" />
-                        </span>
-                      </a>
-                    ))}
+                        </a>
+                      );
+                    })}
                   </div>
                 </div>
                 <div>
