@@ -1,31 +1,48 @@
 import Link from "next/link";
 
-export function EvidenceHeader({ current = "evidence" }: { current?: "route" | "evidence" }) {
+export function EvidenceHeader({
+  current = "evidence",
+}: {
+  current?: "route" | "method" | "evidence";
+}) {
   return (
     <header className="border-b border-border">
       <div className="mx-auto flex h-14 max-w-6xl items-center px-4 sm:px-6 lg:px-8">
-        <div className="flex min-w-0 items-center gap-6">
+        <div className="flex min-w-0 items-center gap-4 sm:gap-6">
           <Link className="shrink-0 text-lg font-semibold tracking-[-0.03em]" href="/">
             JustEnough<span className="text-enough">.</span>
           </Link>
-          <nav aria-label="Primary" className="hidden items-center gap-6 sm:flex">
+          <nav aria-label="Primary" className="flex items-center gap-3 sm:gap-6">
             <Link
               aria-current={current === "route" ? "page" : undefined}
               className={
                 current === "route"
-                  ? "text-sm font-medium underline decoration-enough decoration-2 underline-offset-[18px]"
-                  : "text-sm font-medium text-muted-foreground hover:text-foreground"
+                  ? "text-xs font-medium underline decoration-enough decoration-2 underline-offset-[18px] sm:text-sm"
+                  : "text-xs font-medium text-muted-foreground hover:text-foreground sm:text-sm"
               }
               href="/"
             >
-              Route a task
+              <span className="sm:hidden">Route</span>
+              <span className="hidden sm:inline">Route a task</span>
+            </Link>
+            <Link
+              aria-current={current === "method" ? "page" : undefined}
+              className={
+                current === "method"
+                  ? "text-xs font-medium underline decoration-enough decoration-2 underline-offset-[18px] sm:text-sm"
+                  : "text-xs font-medium text-muted-foreground hover:text-foreground sm:text-sm"
+              }
+              href="/how-it-works"
+            >
+              <span className="sm:hidden">Method</span>
+              <span className="hidden sm:inline">How it works</span>
             </Link>
             <Link
               aria-current={current === "evidence" ? "page" : undefined}
               className={
                 current === "evidence"
-                  ? "text-sm font-medium underline decoration-enough decoration-2 underline-offset-[18px]"
-                  : "text-sm font-medium text-muted-foreground hover:text-foreground"
+                  ? "text-xs font-medium underline decoration-enough decoration-2 underline-offset-[18px] sm:text-sm"
+                  : "text-xs font-medium text-muted-foreground hover:text-foreground sm:text-sm"
               }
               href="/evidence"
             >

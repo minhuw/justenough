@@ -64,6 +64,26 @@ test("server-renders the full evidence explorer", async () => {
   assert.doesNotMatch(html, /illustrative data|Candidate frontier|react-loading-skeleton/i);
 });
 
+test("server-renders the methodology and worked example", async () => {
+  const response = await render("/how-it-works");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /<title>How JustEnough works — JustEnough<\/title>/i);
+  assert.match(html, /A recommendation with receipts/);
+  assert.match(html, /Profile the task/);
+  assert.match(html, /Retrieve analogues/);
+  assert.match(html, /Measure support/);
+  assert.match(html, /Recommend or abstain/);
+  assert.match(html, /90% one-sided Wilson bound/);
+  assert.match(html, /29 \/ 32/);
+  assert.match(html, /Helpful interpreter\. Terrible calculator/);
+  assert.match(
+    html,
+    /<a(?=[^>]*href="\/how-it-works")(?=[^>]*aria-current="page")[^>]*>/,
+  );
+});
+
 test("retrieves specific evidence and abstains when transfer coverage is sparse", async () => {
   const response = await fetchWorker("/api/route", {
     method: "POST",
