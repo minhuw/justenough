@@ -16,6 +16,14 @@ const workflow = [
     title: "Understand the task",
     method: "LLM or local parser",
     output: "intent · tools · surfaces · constraints",
+    example: {
+      label: "Example task",
+      title: "Add a Python CLI feature, update configuration, and add regression tests.",
+      facts: [
+        ["Intent", "Feature implementation"],
+        ["Signals", "Python · CLI · config · tests"],
+      ],
+    },
   },
   {
     number: "02",
@@ -23,6 +31,14 @@ const workflow = [
     title: "Find analogues",
     method: "Facets + lexical + optional vectors",
     output: "comparable benchmark cases",
+    example: {
+      label: "Example corpus match",
+      title: "Add incremental cache controls to Bandit",
+      facts: [
+        ["Matched", "Feature intent · Python · config"],
+        ["Source", "DeepSWE v1.1"],
+      ],
+    },
   },
   {
     number: "03",
@@ -30,6 +46,14 @@ const workflow = [
     title: "Read outcomes",
     method: "Published trials only",
     output: "passes / attempts by exact config",
+    example: {
+      label: "Example evidence group",
+      title: "claude-fable-5 · xhigh",
+      facts: [
+        ["Compatible cases", "8"],
+        ["Observed", "29 / 32 passed"],
+      ],
+    },
   },
   {
     number: "04",
@@ -37,6 +61,14 @@ const workflow = [
     title: "Apply the gate",
     method: "Fixed statistical policy",
     output: "coverage + conservative reliability",
+    example: {
+      label: "Example decision",
+      title: "70% reliability target",
+      facts: [
+        ["90% lower bound", "79%"],
+        ["Result", "Eligible"],
+      ],
+    },
   },
 ];
 
@@ -72,14 +104,14 @@ export default function HowItWorksPage() {
                 </h2>
               </div>
               <p className="font-mono text-[11px] text-muted-foreground">
-                judgment → evidence → policy
+                Hover a stage—or tap “Example”
               </p>
             </figcaption>
 
             <div className="grid items-stretch gap-0 lg:grid-cols-[1fr_1.75rem_1fr_1.75rem_1fr_1.75rem_1fr_1.75rem_1.15fr]">
               {workflow.map((step, index) => (
                 <Fragment key={step.number}>
-                  <article className="flex min-h-44 flex-col border border-border bg-background p-4 sm:p-5">
+                  <article className="group relative flex min-h-44 flex-col border border-border bg-background p-4 transition-colors hover:z-20 hover:border-enough-strong focus-within:z-20 focus-within:border-enough-strong motion-reduce:transition-none sm:p-5">
                     <div className="flex items-center justify-between gap-3">
                       <span className="font-mono text-xs font-semibold text-enough-strong">
                         {step.number}
@@ -101,6 +133,36 @@ export default function HowItWorksPage() {
                         <p>90% Wilson lower bound ≥ target</p>
                       </div>
                     ) : null}
+                    <button
+                      aria-describedby={`workflow-example-${step.number}`}
+                      className="mt-3 inline-flex w-fit items-center gap-1 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground underline decoration-border underline-offset-4 hover:text-foreground focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      type="button"
+                    >
+                      Example <span aria-hidden="true">↗</span>
+                    </button>
+
+                    <div
+                      className={`pointer-events-none invisible absolute top-full z-30 mt-3 w-72 max-w-[calc(100vw-3rem)] translate-y-1 border border-enough-strong bg-surface-raised p-4 opacity-0 shadow-xl transition duration-150 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 motion-reduce:transition-none ${
+                        index === 0 ? "left-0" : "left-1/2 -translate-x-1/2"
+                      }`}
+                      id={`workflow-example-${step.number}`}
+                      role="tooltip"
+                    >
+                      <p className="section-label text-enough-strong">
+                        {step.example.label}
+                      </p>
+                      <p className="mt-2 text-sm font-semibold leading-5">
+                        {step.example.title}
+                      </p>
+                      <dl className="mt-3 divide-y divide-border border-y border-border font-mono text-[10px] leading-5">
+                        {step.example.facts.map(([label, value]) => (
+                          <div className="grid grid-cols-[5.5rem_1fr] gap-2 py-2" key={label}>
+                            <dt className="text-muted-foreground">{label}</dt>
+                            <dd>{value}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </div>
                   </article>
                   <div
                     aria-hidden="true"
