@@ -70,14 +70,17 @@ test("server-renders the methodology and worked example", async () => {
 
   const html = await response.text();
   assert.match(html, /<title>How JustEnough works — JustEnough<\/title>/i);
-  assert.match(html, /A recommendation with receipts/);
-  assert.match(html, /Profile the task/);
-  assert.match(html, /Retrieve analogues/);
-  assert.match(html, /Measure support/);
-  assert.match(html, /Recommend or abstain/);
-  assert.match(html, /90% one-sided Wilson bound/);
+  assert.match(html, /From a task description to an evidence-backed route/);
+  assert.match(html, /One task in\. One honest decision out/);
+  assert.match(html, /Understand the task/);
+  assert.match(html, /Find analogues/);
+  assert.match(html, /Read outcomes/);
+  assert.match(html, /Apply the gate/);
+  assert.match(html, /90% Wilson lower bound/);
+  assert.match(html, /Recommend/);
+  assert.match(html, /Abstain/);
   assert.match(html, /29 \/ 32/);
-  assert.match(html, /Helpful interpreter\. Terrible calculator/);
+  assert.match(html, /Rewrite trials or vote for itself/);
   assert.match(
     html,
     /<a(?=[^>]*href="\/how-it-works")(?=[^>]*aria-current="page")[^>]*>/,
