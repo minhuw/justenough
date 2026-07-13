@@ -75,7 +75,6 @@ async function main() {
       validation_version: validation.validation_version,
       checked_at: validation.checked_at,
       terminal_evidence: validation.terminal_evidence,
-      swe_bench_pro_evidence: validation.swe_bench_pro_evidence,
     },
   };
   await writeAtomically(

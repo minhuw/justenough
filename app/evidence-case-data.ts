@@ -1,6 +1,5 @@
 import deepSweRaw from "@/corpus/deepswe-v1.1.jsonl?raw";
 import terminalBenchRaw from "@/corpus/terminal-bench-2.1.jsonl?raw";
-import sweBenchProRaw from "@/corpus/swe-bench-pro-public-2026-02-23.jsonl?raw";
 import type { EvidenceCase } from "./evidence-data";
 
 function parseJsonl(raw: string): EvidenceCase[] {
@@ -14,7 +13,6 @@ function parseJsonl(raw: string): EvidenceCase[] {
 const evidenceCases = [
   ...parseJsonl(deepSweRaw),
   ...parseJsonl(terminalBenchRaw),
-  ...parseJsonl(sweBenchProRaw),
 ];
 
 export function listEvidenceCases() {

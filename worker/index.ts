@@ -21,7 +21,7 @@ interface Env {
 }
 
 const CASE_ROUTE =
-  /^\/api\/corpus\/(deepswe-v1\.1|terminal-bench-2\.1|swe-bench-pro-public-2026-02-23)\/([A-Za-z0-9][A-Za-z0-9._-]*)$/;
+  /^\/api\/corpus\/(deepswe-v1\.1|terminal-bench-2\.1)\/([A-Za-z0-9][A-Za-z0-9._-]*)$/;
 
 function apiError(message: string, status: number) {
   return Response.json(

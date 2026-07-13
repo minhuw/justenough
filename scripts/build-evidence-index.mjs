@@ -4,7 +4,6 @@ const root = new URL("../", import.meta.url);
 const corpusFiles = [
   new URL("corpus/deepswe-v1.1.jsonl", root),
   new URL("corpus/terminal-bench-2.1.jsonl", root),
-  new URL("corpus/swe-bench-pro-public-2026-02-23.jsonl", root),
 ];
 
 function parseJsonl(raw) {

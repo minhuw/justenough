@@ -81,7 +81,6 @@ export function caseHref(item: Pick<EvidenceCase, "identity">) {
 export function benchmarkLabel(benchmark: string) {
   if (benchmark === "deepswe") return "DeepSWE";
   if (benchmark === "terminal-bench") return "Terminal-Bench";
-  if (benchmark === "swe-bench-pro") return "SWE-Bench Pro";
   return benchmark;
 }
 

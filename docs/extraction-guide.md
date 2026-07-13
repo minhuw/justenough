@@ -1,7 +1,7 @@
 # Benchmark corpus extraction guide
 
 This document is the contract for extracting JustEnough case records from
-DeepSWE v1.1, Terminal-Bench 2.1, and SWE-Bench Pro public. Follow it exactly. Do not infer a new
+DeepSWE v1.1 and Terminal-Bench 2.1. Follow it exactly. Do not infer a new
 schema or silently repair source data during an extraction run.
 
 ## Deliverables
@@ -10,7 +10,6 @@ Produce these files, ordered by `identity.native_id`:
 
 - `corpus/deepswe-v1.1.jsonl` — 113 records
 - `corpus/terminal-bench-2.1.jsonl` — 89 records
-- `corpus/swe-bench-pro-public-2026-02-23.jsonl` — 731 records
 - `corpus/manifest.json` — source pins, counts, sizes, and SHA-256 digests
 
 Each JSONL line is one complete case record. Files must end with a newline.
@@ -24,12 +23,6 @@ Use only these official sources and revisions:
 | --- | --- | --- | --- |
 | DeepSWE | v1.1 | `https://github.com/datacurve-ai/deep-swe` | `6db64a40f3318d8659238ff34a8cc4b491c49205` |
 | Terminal-Bench | 2.1 | `https://github.com/harbor-framework/terminal-bench-2-1` | `d49e28f1e4ddd13d289e85a5f312a66750951932` |
-| SWE-Bench Pro | public-2026-02-23 | `https://huggingface.co/datasets/ScaleAI/SWE-bench_Pro` | `7ab5114912baf22bb098818e604c02fe7ad2c11f` |
-
-SWE-Bench Pro uses a second pin for per-task results:
-`https://github.com/scaleapi/SWE-bench_Pro-os` at
-`ca10a60a5fcae51e6948ffe1485d4153d421e6c5`. Its benchmark-specific contract
-is [SWE-Bench Pro public extraction guide](swe-bench-pro-extraction-guide.md).
 
 DeepSWE also publishes these versioned artifacts:
 
@@ -104,8 +97,8 @@ Use `schema_version: "1"`. Omit unavailable optional keys rather than writing
 {
   "schema_version": "1",
   "identity": {
-    "benchmark": "deepswe | terminal-bench | swe-bench-pro",
-    "release": "v1.1 | 2.1 | public-2026-02-23",
+    "benchmark": "deepswe | terminal-bench",
+    "release": "v1.1 | 2.1",
     "native_id": "upstream task id"
   },
   "revision": {
@@ -464,7 +457,7 @@ coerce the offending record.
 
 ## Manifest and R2 layout
 
-Create `corpus/manifest.json` after all three JSONL files pass validation. Include:
+Create `corpus/manifest.json` after both JSONL files pass validation. Include:
 
 - manifest version;
 - generation timestamp;
@@ -480,10 +473,9 @@ The R2 object layout is:
 datasets/v1/manifest.json
 datasets/v1/deepswe-v1.1/<native-id>.json
 datasets/v1/terminal-bench-2.1/<native-id>.json
-datasets/v1/swe-bench-pro-public-2026-02-23/<native-id>.json
 ```
 
-The manifest enumerates all 933 case keys and their byte sizes and SHA-256
+The manifest enumerates all 202 case keys and their byte sizes and SHA-256
 digests. Do not upload release snapshots or duplicate JSONL objects. Upload
 only after local validation and digest generation. Create a new private R2
 bucket for the corpus. Never run an interactive Wrangler login from an agent.
