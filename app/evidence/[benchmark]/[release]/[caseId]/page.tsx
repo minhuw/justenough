@@ -4,7 +4,6 @@ import {
   Check,
   CircleAlert,
   ExternalLink,
-  X,
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -12,30 +11,8 @@ import { EvidenceFooter, EvidenceHeader } from "../../../../evidence-chrome";
 import {
   benchmarkLabel,
   findEvidenceCase,
-  type Outcome,
 } from "../../../../evidence-data";
-
-function outcomeTone(outcome: Outcome) {
-  if (outcome.passed === outcome.attempts) {
-    return {
-      label: "All passed",
-      className: "bg-positive-soft text-positive",
-      icon: Check,
-    };
-  }
-  if (outcome.passed === 0) {
-    return {
-      label: "No passes",
-      className: "bg-negative-soft text-negative",
-      icon: X,
-    };
-  }
-  return {
-    label: "Mixed",
-    className: "bg-warning-soft text-warning",
-    icon: CircleAlert,
-  };
-}
+import { OutcomeBrowser } from "../../../../outcome-browser";
 
 function sourceName(url: string) {
   if (url.includes("github.com")) return "Source record";
@@ -177,93 +154,10 @@ export default async function EvidenceCasePage({
                   </p>
                 </div>
 
-                <div className="mt-6 overflow-x-auto border border-border bg-surface">
-                  <table className="w-full min-w-[45rem] border-collapse text-left">
-                    <thead>
-                      <tr className="bg-muted text-xs text-muted-foreground">
-                        <th className="px-4 py-3 font-medium" scope="col">
-                          Model
-                        </th>
-                        <th className="px-4 py-3 font-medium" scope="col">
-                          Harness
-                        </th>
-                        <th className="px-4 py-3 font-medium" scope="col">
-                          Effort
-                        </th>
-                        <th className="px-4 py-3 font-medium" scope="col">
-                          Result
-                        </th>
-                        <th className="px-4 py-3 text-right font-medium" scope="col">
-                          Passes
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {item.outcomes.panel.map((outcome) => {
-                        const tone = outcomeTone(outcome);
-                        const Icon = tone.icon;
-                        const sourceUrl = outcome.source_submission_url ?? item.outcomes.source_url;
-
-                        return (
-                          <tr
-                            className="border-t border-border align-middle"
-                            key={`${outcome.provider}-${outcome.model}-${outcome.harness}-${outcome.effort}`}
-                          >
-                            <td className="px-4 py-4">
-                              {sourceUrl ? (
-                                <a
-                                  className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                                  href={sourceUrl}
-                                  rel="noreferrer"
-                                  target="_blank"
-                                >
-                                  {outcome.model}
-                                  <ExternalLink aria-hidden="true" className="size-3" />
-                                </a>
-                              ) : (
-                                <span className="font-mono text-xs font-semibold">
-                                  {outcome.model}
-                                </span>
-                              )}
-                              <span className="mt-1 block text-[11px] text-muted-foreground">
-                                {outcome.provider}
-                              </span>
-                            </td>
-                            <td className="px-4 py-4">
-                              <span className="text-sm">{outcome.harness}</span>
-                              <span className="mt-1 block font-mono text-[11px] text-muted-foreground">
-                                {outcome.harness_version ?? "published configuration"}
-                              </span>
-                            </td>
-                            <td className="px-4 py-4 font-mono text-xs uppercase tracking-[0.05em]">
-                              {outcome.effort}
-                            </td>
-                            <td className="px-4 py-4">
-                              <span
-                                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${tone.className}`}
-                              >
-                                <Icon aria-hidden="true" className="size-3.5" />
-                                {tone.label}
-                              </span>
-                              {outcome.errored > 0 || outcome.disqualified ? (
-                                <span className="mt-1.5 block text-[11px] text-muted-foreground">
-                                  {outcome.errored > 0 ? `${outcome.errored} errors` : null}
-                                  {outcome.errored > 0 && outcome.disqualified ? " · " : null}
-                                  {outcome.disqualified
-                                    ? `${outcome.disqualified} disqualified`
-                                    : null}
-                                </span>
-                              ) : null}
-                            </td>
-                            <td className="px-4 py-4 text-right font-mono text-sm font-semibold tabular-nums">
-                              {outcome.passed}/{outcome.attempts}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+                <OutcomeBrowser
+                  fallbackSourceUrl={item.outcomes.source_url}
+                  outcomes={item.outcomes.panel}
+                />
               </section>
             </div>
 

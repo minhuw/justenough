@@ -7,6 +7,7 @@ export type Outcome = {
   harness: string;
   harness_version?: string;
   configuration?: string;
+  submission_date?: string;
   effort: string;
   attempts: number;
   passed: number;
@@ -14,6 +15,7 @@ export type Outcome = {
   errored: number;
   excluded: number;
   disqualified?: number;
+  partial?: number;
   source_job_url?: string;
   source_submission_url?: string;
 };
@@ -48,6 +50,7 @@ export type EvidenceCase = {
   };
   outcomes: {
     source_url?: string;
+    published_configurations?: number;
     published_trials?: number;
     panel: Outcome[];
   };

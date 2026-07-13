@@ -104,7 +104,7 @@ export function EvidenceBrowser({ cases }: { cases: EvidenceCase[] }) {
               <dd className="metric-value">2</dd>
             </div>
             <div>
-              <dt className="metric-label">Panel trials</dt>
+              <dt className="metric-label">Published trials</dt>
               <dd className="metric-value">
                 {cases.reduce((sum, item) => sum + totalTrials(item), 0)}
               </dd>
@@ -173,9 +173,9 @@ export function EvidenceBrowser({ cases }: { cases: EvidenceCase[] }) {
                   value={outcome}
                 >
                   <option value="all">Any outcome</option>
-                  <option value="consistent">All panel trials passed</option>
-                  <option value="mixed">Mixed panel results</option>
-                  <option value="none">No panel passes</option>
+                  <option value="consistent">All published trials passed</option>
+                  <option value="mixed">Mixed published results</option>
+                  <option value="none">No published passes</option>
                 </select>
               </label>
             </div>
@@ -221,7 +221,7 @@ export function EvidenceBrowser({ cases }: { cases: EvidenceCase[] }) {
                       Technology
                     </th>
                     <th className="px-4 py-3 text-right font-medium" scope="col">
-                      Panel passes
+                      Published passes
                     </th>
                     <th className="w-10 px-4 py-3" scope="col">
                       <span className="sr-only">Open case</span>
@@ -297,9 +297,9 @@ export function EvidenceBrowser({ cases }: { cases: EvidenceCase[] }) {
         </div>
 
         <p className="mt-4 max-w-3xl text-xs leading-5 text-muted-foreground">
-          Panel rates summarize four published model-and-harness configurations per case. They
-          are evidence, not a benchmark-wide ranking. Open a case to see the exact execution
-          configurations and trial counts.
+          Rates summarize every published configuration available from the pinned benchmark
+          sources for these cases. They are evidence, not a cross-benchmark ranking. Open a case
+          to filter by model, provider, harness, or effort.
         </p>
       </section>
     </main>

@@ -36,7 +36,8 @@ test("server-renders the evidence explorer and sample cases", async () => {
   assert.match(html, /10 cases/);
   assert.match(html, /Add bail-on-test-failure handling to Testem/);
   assert.match(html, /Boot Alpine in QEMU and expose SSH/);
-  assert.match(html, /Panel trials/);
+  assert.match(html, /Published trials/);
+  assert.match(html, /1320/);
   assert.doesNotMatch(html, /illustrative data|Candidate frontier|react-loading-skeleton/i);
 });
 
@@ -50,6 +51,8 @@ test("server-renders a shareable evidence case with outcomes and provenance", as
   assert.match(html, /Find and fix a CRLF header injection vulnerability/);
   assert.match(html, /reject carriage return, line feed, and null header input/);
   assert.match(html, /gpt-5\.6-luna/);
+  assert.match(html, /grok-4\.5/);
+  assert.match(html, /Configurations[\s\S]*?20/);
   assert.match(html, /2<!-- -->\/<!-- -->5/);
   assert.match(html, /3 disqualified/);
   assert.match(html, /Derived metadata/);
@@ -57,12 +60,27 @@ test("server-renders a shareable evidence case with outcomes and provenance", as
   assert.doesNotMatch(html, /Original prompt/);
 });
 
+test("server-renders the full DeepSWE model set", async () => {
+  const response = await render(
+    "/evidence/deepswe/v1.1/testem-bail-on-test-failure",
+  );
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /Configurations[\s\S]*?41/);
+  assert.match(html, /claude-fable-5/);
+  assert.match(html, /gemini-3\.5-flash/);
+  assert.match(html, /glm-5\.2/);
+  assert.match(html, /kimi-k2\.7-code/);
+});
+
 test("bundles the JSONL normalization sample without enabling persistence", async () => {
-  const [packageJson, dataModule, browser, detailPage, hostingConfig] =
+  const [packageJson, dataModule, browser, outcomeBrowser, detailPage, hostingConfig] =
     await Promise.all([
       readFile(new URL("package.json", projectRoot), "utf8"),
       readFile(new URL("app/evidence-data.ts", projectRoot), "utf8"),
       readFile(new URL("app/evidence-browser.tsx", projectRoot), "utf8"),
+      readFile(new URL("app/outcome-browser.tsx", projectRoot), "utf8"),
       readFile(
         new URL(
           "app/evidence/[benchmark]/[release]/[caseId]/page.tsx",
@@ -77,6 +95,8 @@ test("bundles the JSONL normalization sample without enabling persistence", asyn
   assert.match(dataModule, /\.jsonl\?raw/);
   assert.match(browser, /Search evidence cases/);
   assert.match(browser, /outcomeState/);
+  assert.match(outcomeBrowser, /Search outcome configurations/);
+  assert.match(outcomeBrowser, /submission_date/);
   assert.match(detailPage, /Model × harness outcomes/);
   const hosting = JSON.parse(hostingConfig);
   assert.match(hosting.project_id, /^appgprj_/);
@@ -84,14 +104,17 @@ test("bundles the JSONL normalization sample without enabling persistence", asyn
   assert.equal(hosting.r2, null);
 });
 
-test("normalization fixtures contain ten unique cases and forty outcome rows", async () => {
-  const fixtureUrls = [
-    new URL("fixtures/normalization/deepswe-v1.1.jsonl", projectRoot),
-    new URL("fixtures/normalization/terminal-bench-2.1.jsonl", projectRoot),
-  ];
-  const records = (
-    await Promise.all(fixtureUrls.map((url) => readFile(url, "utf8")))
-  ).flatMap((raw) => raw.trim().split("\n").map(JSON.parse));
+test("normalization fixtures contain every published configuration for ten cases", async () => {
+  const [deepSweRaw, terminalBenchRaw] = await Promise.all([
+    readFile(new URL("fixtures/normalization/deepswe-v1.1.jsonl", projectRoot), "utf8"),
+    readFile(
+      new URL("fixtures/normalization/terminal-bench-2.1.jsonl", projectRoot),
+      "utf8",
+    ),
+  ]);
+  const deepSweRecords = deepSweRaw.trim().split("\n").map(JSON.parse);
+  const terminalBenchRecords = terminalBenchRaw.trim().split("\n").map(JSON.parse);
+  const records = [...deepSweRecords, ...terminalBenchRecords];
   const identities = records.map(
     (record) =>
       `${record.identity.benchmark}:${record.identity.release}:${record.identity.native_id}`,
@@ -99,8 +122,34 @@ test("normalization fixtures contain ten unique cases and forty outcome rows", a
 
   assert.equal(records.length, 10);
   assert.equal(new Set(identities).size, 10);
+  assert.ok(deepSweRecords.every((record) => record.outcomes.panel.length === 41));
+  assert.ok(
+    terminalBenchRecords.every((record) => record.outcomes.panel.length === 20),
+  );
   assert.equal(
     records.reduce((count, record) => count + record.outcomes.panel.length, 0),
-    40,
+    305,
+  );
+  assert.equal(
+    records.reduce((count, record) => count + record.outcomes.published_trials, 0),
+    1320,
+  );
+  assert.equal(new Set(deepSweRecords[0].outcomes.panel.map((row) => row.model)).size, 13);
+  assert.equal(
+    new Set(terminalBenchRecords[0].outcomes.panel.map((row) => row.model)).size,
+    13,
+  );
+  assert.ok(
+    records.every((record) => {
+      const configurations = record.outcomes.panel.map((row) => row.configuration);
+      return configurations.every(Boolean) && new Set(configurations).size === configurations.length;
+    }),
+  );
+  assert.ok(
+    records.every((record) =>
+      record.outcomes.panel.every(
+        (row) => row.model && row.provider && row.provider !== "unknown",
+      ),
+    ),
   );
 });
