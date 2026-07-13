@@ -341,13 +341,13 @@ Avoid a conventional SaaS hero with mockup art, logo clouds, testimonials, prici
 
 1. Case title, suite, version, repository/language/environment
 2. Normalized task facets and required capabilities
-3. Original prompt and verifier summary
+3. Compact task profile, distinguishing requirements, and extraction provenance
 4. Per-model, per-effort trials
 5. Cost/latency/tokens/steps where available
 6. Source links and ingestion timestamp
 7. Data-quality warnings
 
-Raw material stays reachable, but long prompts, logs, and code render collapsed by default.
+Raw source records stay reachable by link. Prompts, verifier material, logs, trajectories, and code are not copied into the searchable corpus.
 
 ## 12. Responsive behavior
 

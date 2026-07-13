@@ -5,26 +5,46 @@
   --background: oklch(98.2% 0.012 88);
   --foreground: oklch(18% 0.014 72);
   --surface: oklch(100% 0.006 88);
-  --chart: oklch(95.2% 0.014 88);
+  --surface-raised: oklch(99.3% 0.009 88);
+  --muted: oklch(95.2% 0.014 88);
   --muted-foreground: oklch(48% 0.018 75);
+  --subtle: oklch(92.7% 0.018 88);
   --border: oklch(87.5% 0.018 84);
+  --input: oklch(84.5% 0.022 82);
   --enough: oklch(82% 0.155 89);
   --enough-hover: oklch(78% 0.165 87);
   --enough-foreground: oklch(22% 0.046 68);
   --enough-strong: oklch(60% 0.14 86);
+  --ring: oklch(60% 0.14 86);
+  --positive: oklch(55% 0.145 148);
+  --positive-soft: oklch(94% 0.045 148);
+  --negative: oklch(56% 0.19 29);
+  --negative-soft: oklch(95% 0.045 29);
+  --warning: oklch(52% 0.13 72);
+  --warning-soft: oklch(95% 0.05 78);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
-  --color-chart: var(--chart);
+  --color-surface-raised: var(--surface-raised);
+  --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-subtle: var(--subtle);
   --color-border: var(--border);
+  --color-input: var(--input);
   --color-enough: var(--enough);
   --color-enough-hover: var(--enough-hover);
   --color-enough-foreground: var(--enough-foreground);
   --color-enough-strong: var(--enough-strong);
+  --color-ring: var(--ring);
+  --color-positive: var(--positive);
+  --color-positive-soft: var(--positive-soft);
+  --color-negative: var(--negative);
+  --color-negative-soft: var(--negative-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
   --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
   --font-mono: "Google Sans Code", ui-monospace, SFMono-Regular, Menlo,
@@ -37,13 +57,23 @@
     --background: oklch(16.5% 0.012 72);
     --foreground: oklch(96% 0.009 88);
     --surface: oklch(20.5% 0.014 72);
-    --chart: oklch(26.5% 0.016 72);
+    --surface-raised: oklch(23% 0.016 72);
+    --muted: oklch(26.5% 0.016 72);
     --muted-foreground: oklch(72% 0.016 84);
+    --subtle: oklch(30% 0.018 72);
     --border: oklch(33% 0.018 72);
+    --input: oklch(38% 0.022 72);
     --enough: oklch(86% 0.15 89);
     --enough-hover: oklch(90% 0.14 91);
     --enough-foreground: oklch(20% 0.04 68);
     --enough-strong: oklch(82% 0.13 88);
+    --ring: oklch(82% 0.13 88);
+    --positive: oklch(74% 0.15 148);
+    --positive-soft: oklch(28% 0.055 148);
+    --negative: oklch(72% 0.18 29);
+    --negative-soft: oklch(29% 0.06 29);
+    --warning: oklch(79% 0.14 78);
+    --warning-soft: oklch(30% 0.055 78);
   }
 }
 
@@ -65,11 +95,52 @@ body {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
+}
+
+button,
+select {
+  cursor: pointer;
+}
+
+.eyebrow,
+.metric-label,
+.section-label {
+  font-family: "Google Sans Code", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.metric-value {
+  margin-top: 0.25rem;
+  font-family: "Google Sans Code", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, monospace;
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.facet {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.3rem 0.6rem;
+  background: var(--surface);
+  font-size: 0.75rem;
+  line-height: 1.25;
 }
 
 ::selection {
   background: var(--enough);
   color: var(--foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
