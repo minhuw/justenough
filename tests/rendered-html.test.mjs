@@ -56,7 +56,7 @@ test("server-renders a shareable evidence case with outcomes and provenance", as
   assert.match(html, /2<!-- -->\/<!-- -->5/);
   assert.match(html, /3 disqualified/);
   assert.match(html, /Derived metadata/);
-  assert.match(html, /Deliberately omitted/);
+  assert.doesNotMatch(html, /Deliberately omitted|full instruction|trajectory/);
   assert.doesNotMatch(html, /Original prompt/);
 });
 

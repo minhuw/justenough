@@ -234,16 +234,6 @@ export default async function EvidenceCasePage({
                 </div>
               </section>
 
-              <section aria-labelledby="omissions">
-                <h2 className="section-label" id="omissions">
-                  Deliberately omitted
-                </h2>
-                <ul className="mt-3 space-y-2 text-xs leading-5 text-muted-foreground">
-                  {item.extraction.omitted.map((omission) => (
-                    <li key={omission}>— {omission}</li>
-                  ))}
-                </ul>
-              </section>
             </aside>
           </div>
         </article>
