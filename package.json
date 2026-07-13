@@ -12,7 +12,11 @@
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
-    "data:sync-outcomes": "node scripts/sync-outcomes.mjs"
+    "data:sync-outcomes": "node scripts/sync-outcomes.mjs",
+    "data:extract:deepswe": "node scripts/extract-deepswe.mjs",
+    "data:extract:terminal-bench": "node scripts/extract-terminal-bench.mjs",
+    "data:validate-corpus": "node scripts/validate-corpus.mjs",
+    "data:build-corpus": "node scripts/build-corpus-manifest.mjs"
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",

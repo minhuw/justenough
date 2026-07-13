@@ -1,0 +1,63 @@
+{
+  "manifest_version": "1",
+  "generated_at": "2026-07-13T08:32:32.055Z",
+  "schema_version": "0.2",
+  "extraction_version": "full-1",
+  "sources": {
+    "deepswe-v1.1": {
+      "repository": "https://github.com/datacurve-ai/deep-swe",
+      "revision": "6db64a40f3318d8659238ff34a8cc4b491c49205"
+    },
+    "terminal-bench-2.1": {
+      "repository": "https://github.com/harbor-framework/terminal-bench-2-1",
+      "revision": "d49e28f1e4ddd13d289e85a5f312a66750951932"
+    }
+  },
+  "corpora": [
+    {
+      "benchmark": "deepswe",
+      "release": "v1.1",
+      "object_path": "corpus/v1/deepswe-v1.1.jsonl",
+      "media_type": "application/x-ndjson",
+      "byte_size": 1311734,
+      "sha256": "e66349d39051474f88783c68d88362cde80a53d8b32892dc3e66632c5e0f572f",
+      "record_count": 113,
+      "configuration_count": 41,
+      "model_count": 13,
+      "trial_count": 18522,
+      "gzip": {
+        "object_path": "corpus/v1/deepswe-v1.1.jsonl.gz",
+        "media_type": "application/gzip",
+        "byte_size": 76805,
+        "sha256": "0dc5d5ee12b1b346b3b3747decac939128f2cc5560326a191db12acb0f265607"
+      }
+    },
+    {
+      "benchmark": "terminal-bench",
+      "release": "2.1",
+      "object_path": "corpus/v1/terminal-bench-2.1.jsonl",
+      "media_type": "application/x-ndjson",
+      "byte_size": 1213401,
+      "sha256": "7d26df1a27ccd4c8630717216521a67c2204e4dd9a7dc3a10c23bec89679b328",
+      "record_count": 89,
+      "configuration_count": 20,
+      "model_count": 13,
+      "trial_count": 8902,
+      "gzip": {
+        "object_path": "corpus/v1/terminal-bench-2.1.jsonl.gz",
+        "media_type": "application/gzip",
+        "byte_size": 44476,
+        "sha256": "71fa2a0cbad309d80bb758e57f4078bd6769e0f0abb24afcd1dbe2b8655f7f21"
+      }
+    }
+  ],
+  "validation": {
+    "passed": true,
+    "validation_version": "1",
+    "checked_at": "2026-07-13T08:32:32.039Z",
+    "terminal_evidence": {
+      "jobs": 13,
+      "resolved_trial_references": 8902
+    }
+  }
+}
