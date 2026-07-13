@@ -55,8 +55,10 @@ test("server-renders a shareable evidence case with outcomes and provenance", as
   assert.match(html, /Configurations[\s\S]*?20/);
   assert.match(html, /2<!-- -->\/<!-- -->5/);
   assert.match(html, /3 disqualified/);
-  assert.match(html, /Derived metadata/);
-  assert.doesNotMatch(html, /Deliberately omitted|full instruction|trajectory/);
+  assert.doesNotMatch(
+    html,
+    /Extraction|Derived metadata|frontier LLM|spike-1|Deliberately omitted|full instruction|trajectory/,
+  );
   assert.doesNotMatch(html, /Original prompt/);
 });
 

@@ -2,7 +2,6 @@ import {
   ArrowLeft,
   ArrowUpRight,
   Check,
-  CircleAlert,
   ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
@@ -211,26 +210,6 @@ export default async function EvidenceCasePage({
                         <ExternalLink aria-hidden="true" className="size-3.5" />
                       </a>
                     ))}
-                </div>
-              </section>
-
-              <section aria-labelledby="extraction">
-                <h2 className="section-label" id="extraction">
-                  Extraction
-                </h2>
-                <p className="mt-3 text-sm leading-6">{item.extraction.method}</p>
-                <p className="mt-2 font-mono text-[11px] text-muted-foreground">
-                  {item.extraction.version} · {item.extraction.date}
-                </p>
-                <div className="mt-4 rounded-md border border-warning bg-warning-soft p-3 text-xs leading-5">
-                  <div className="flex items-center gap-2 font-semibold text-warning">
-                    <CircleAlert aria-hidden="true" className="size-4" />
-                    Derived metadata
-                  </div>
-                  <p className="mt-2 text-foreground">
-                    The summary and semantic facets were extracted by an LLM and can be
-                    regenerated from the pinned source.
-                  </p>
                 </div>
               </section>
 
