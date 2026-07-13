@@ -131,23 +131,18 @@ export function EvidenceBrowser({ cases }: { cases: EvidenceCase[] }) {
               />
             </label>
 
-            <div aria-label="Benchmark" className="flex min-w-max rounded-sm bg-muted p-1" role="group">
-              {[
-                ["all", "All"],
-                ["deepswe", "DeepSWE"],
-                ["terminal-bench", "Terminal-Bench"],
-              ].map(([value, label]) => (
-                <button
-                  aria-pressed={benchmark === value}
-                  className="min-h-9 rounded-sm border border-transparent px-3 text-xs font-medium text-muted-foreground aria-pressed:border-border aria-pressed:bg-surface aria-pressed:text-foreground"
-                  key={value}
-                  onClick={() => setBenchmark(value)}
-                  type="button"
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
+            <label>
+              <span className="sr-only">Benchmark</span>
+              <select
+                className="h-11 w-full rounded-sm border border-input bg-background px-3 text-xs text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                onChange={(event) => setBenchmark(event.target.value)}
+                value={benchmark}
+              >
+                <option value="all">Any benchmark</option>
+                <option value="deepswe">DeepSWE</option>
+                <option value="terminal-bench">Terminal-Bench</option>
+              </select>
+            </label>
 
             <div className="grid grid-cols-2 gap-3">
               <label>

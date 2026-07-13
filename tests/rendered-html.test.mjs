@@ -38,6 +38,8 @@ test("server-renders the evidence explorer and sample cases", async () => {
   assert.match(html, /Boot Alpine in QEMU and expose SSH/);
   assert.match(html, /Published trials/);
   assert.match(html, /1320/);
+  assert.match(html, /Any benchmark/);
+  assert.doesNotMatch(html, /aria-pressed/);
   assert.doesNotMatch(html, /illustrative data|Candidate frontier|react-loading-skeleton/i);
 });
 
