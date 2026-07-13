@@ -33,13 +33,17 @@ test("server-renders the evidence explorer and sample cases", async () => {
   const html = await response.text();
   assert.match(html, /<title>JustEnough — evidence browser<\/title>/i);
   assert.match(html, /Cases, minus the archaeology/);
-  assert.match(html, /10 cases/);
+  assert.match(html, /id="case-results">10<!-- --> <!-- -->cases/);
   assert.match(html, /Add bail-on-test-failure handling to Testem/);
   assert.match(html, /Boot Alpine in QEMU and expose SSH/);
   assert.match(html, /Published trials/);
   assert.match(html, /1320/);
   assert.match(html, /Any benchmark/);
   assert.doesNotMatch(html, /aria-pressed/);
+  assert.doesNotMatch(
+    html,
+    /Rates summarize every published configuration|10-case normalization sample|sample v2026\.07/,
+  );
   assert.doesNotMatch(html, /illustrative data|Candidate frontier|react-loading-skeleton/i);
 });
 

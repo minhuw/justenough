@@ -291,11 +291,6 @@ export function EvidenceBrowser({ cases }: { cases: EvidenceCase[] }) {
           )}
         </div>
 
-        <p className="mt-4 max-w-3xl text-xs leading-5 text-muted-foreground">
-          Rates summarize every published configuration available from the pinned benchmark
-          sources for these cases. They are evidence, not a cross-benchmark ranking. Open a case
-          to filter by model, provider, harness, or effort.
-        </p>
       </section>
     </main>
   );
