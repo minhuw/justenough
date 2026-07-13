@@ -5,14 +5,14 @@ import { useMemo, useState } from "react";
 import {
   benchmarkLabel,
   caseHref,
-  type EvidenceCase,
+  type EvidenceSummary,
   totalPasses,
   totalTrials,
 } from "./evidence-data";
 
 type OutcomeFilter = "all" | "consistent" | "mixed" | "none";
 
-function outcomeState(item: EvidenceCase): Exclude<OutcomeFilter, "all"> {
+function outcomeState(item: EvidenceSummary): Exclude<OutcomeFilter, "all"> {
   const passes = totalPasses(item);
   const trials = totalTrials(item);
   if (passes === 0) return "none";
@@ -24,7 +24,7 @@ function percentage(passes: number, trials: number) {
   return trials === 0 ? 0 : Math.round((passes / trials) * 100);
 }
 
-export function EvidenceBrowser({ cases }: { cases: EvidenceCase[] }) {
+export function EvidenceBrowser({ cases }: { cases: EvidenceSummary[] }) {
   const [query, setQuery] = useState("");
   const [benchmark, setBenchmark] = useState("all");
   const [technology, setTechnology] = useState("all");

@@ -4,7 +4,7 @@ import test from "node:test";
 
 const projectRoot = new URL("../", import.meta.url);
 
-async function render(pathname = "/") {
+async function render(pathname = "/", bindings = {}) {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
@@ -17,6 +17,7 @@ async function render(pathname = "/") {
       ASSETS: {
         fetch: async () => new Response("Not found", { status: 404 }),
       },
+      ...bindings,
     },
     {
       waitUntil() {},
@@ -25,7 +26,7 @@ async function render(pathname = "/") {
   );
 }
 
-test("server-renders the evidence explorer and sample cases", async () => {
+test("server-renders the full evidence explorer", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
@@ -33,11 +34,11 @@ test("server-renders the evidence explorer and sample cases", async () => {
   const html = await response.text();
   assert.match(html, /<title>JustEnough — evidence browser<\/title>/i);
   assert.match(html, /Cases, minus the archaeology/);
-  assert.match(html, /id="case-results">10<!-- --> <!-- -->cases/);
+  assert.match(html, /id="case-results">202<!-- --> <!-- -->cases/);
   assert.match(html, /Add bail-on-test-failure handling to Testem/);
   assert.match(html, /Boot Alpine in QEMU with SSH access/);
   assert.match(html, /Published trials/);
-  assert.match(html, /1320/);
+  assert.match(html, /27424/);
   assert.match(html, /Any benchmark/);
   assert.doesNotMatch(html, /aria-pressed/);
   assert.doesNotMatch(
@@ -82,11 +83,22 @@ test("server-renders the full DeepSWE model set", async () => {
   assert.match(html, /kimi-k2-7-code/);
 });
 
-test("bundles the JSONL normalization sample without enabling persistence", async () => {
-  const [packageJson, dataModule, browser, outcomeBrowser, detailPage, hostingConfig] =
+test("bundles a compact index and configures the R2 corpus binding", async () => {
+  const [
+    packageJson,
+    dataModule,
+    caseDataModule,
+    browser,
+    outcomeBrowser,
+    detailPage,
+    worker,
+    hostingConfig,
+    wranglerConfig,
+  ] =
     await Promise.all([
       readFile(new URL("package.json", projectRoot), "utf8"),
       readFile(new URL("app/evidence-data.ts", projectRoot), "utf8"),
+      readFile(new URL("app/evidence-case-data.ts", projectRoot), "utf8"),
       readFile(new URL("app/evidence-browser.tsx", projectRoot), "utf8"),
       readFile(new URL("app/outcome-browser.tsx", projectRoot), "utf8"),
       readFile(
@@ -96,20 +108,74 @@ test("bundles the JSONL normalization sample without enabling persistence", asyn
         ),
         "utf8",
       ),
+      readFile(new URL("worker/index.ts", projectRoot), "utf8"),
       readFile(new URL(".openai/hosting.json", projectRoot), "utf8"),
+      readFile(new URL("wrangler.jsonc", projectRoot), "utf8"),
     ]);
 
   assert.doesNotMatch(packageJson, /@tanstack\/react-query|@radix-ui\/react-tabs/);
-  assert.match(dataModule, /\.jsonl\?raw/);
+  assert.match(dataModule, /evidence-index\.json/);
+  assert.doesNotMatch(dataModule, /\.jsonl\?raw/);
+  assert.match(caseDataModule, /corpus\/deepswe-v1\.1\.jsonl\?raw/);
   assert.match(browser, /Search evidence cases/);
   assert.match(browser, /outcomeState/);
   assert.match(outcomeBrowser, /Search outcome configurations/);
   assert.match(outcomeBrowser, /submission_date/);
   assert.match(detailPage, /Model × harness outcomes/);
+  assert.match(worker, /datasets\/v1\/manifest\.json/);
+  assert.match(worker, /env\.CORPUS\.get/);
   const hosting = JSON.parse(hostingConfig);
   assert.match(hosting.project_id, /^appgprj_/);
   assert.equal(hosting.d1, null);
-  assert.equal(hosting.r2, null);
+  assert.equal(hosting.r2, "CORPUS");
+  assert.match(wranglerConfig, /"bucket_name": "justenough-corpus"/);
+});
+
+test("compact index covers all corpus cases without outcome panels", async () => {
+  const index = JSON.parse(
+    await readFile(new URL("fixtures/evidence-index.json", projectRoot), "utf8"),
+  );
+  const identities = index.map(
+    (record) =>
+      `${record.identity.benchmark}:${record.identity.release}:${record.identity.native_id}`,
+  );
+
+  assert.equal(index.length, 202);
+  assert.equal(new Set(identities).size, 202);
+  assert.equal(
+    index.reduce((count, record) => count + record.outcome_summary.trials, 0),
+    27424,
+  );
+  assert.ok(index.every((record) => !("outcomes" in record)));
+});
+
+test("serves canonical corpus objects through the R2 API", async () => {
+  const requestedKeys = [];
+  const response = await render(
+    "/api/corpus/deepswe-v1.1/testem-bail-on-test-failure",
+    {
+      CORPUS: {
+        async get(key) {
+          requestedKeys.push(key);
+          return {
+            body: new Blob([JSON.stringify({ identity: { native_id: "testem-bail-on-test-failure" } })]).stream(),
+            httpEtag: '"fixture-etag"',
+            writeHttpMetadata() {},
+          };
+        },
+      },
+    },
+  );
+
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("etag"), '"fixture-etag"');
+  assert.deepEqual(requestedKeys, [
+    "datasets/v1/deepswe-v1.1/testem-bail-on-test-failure.json",
+  ]);
+  assert.equal(
+    (await response.json()).identity.native_id,
+    "testem-bail-on-test-failure",
+  );
 });
 
 test("normalization fixtures contain every published configuration for ten cases", async () => {

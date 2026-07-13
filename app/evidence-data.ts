@@ -1,5 +1,4 @@
-import deepSweRaw from "@/fixtures/normalization/deepswe-v1.1.jsonl?raw";
-import terminalBenchRaw from "@/fixtures/normalization/terminal-bench-2.1.jsonl?raw";
+import evidenceIndexJson from "@/fixtures/evidence-index.json";
 
 export type Outcome = {
   provider: string;
@@ -65,45 +64,30 @@ export type EvidenceCase = {
   };
 };
 
-function parseJsonl(raw: string): EvidenceCase[] {
-  return raw
-    .trim()
-    .split("\n")
-    .filter(Boolean)
-    .map((line) => JSON.parse(line) as EvidenceCase);
-}
+export type EvidenceSummary = Pick<EvidenceCase, "identity" | "profile"> & {
+  outcome_summary: {
+    trials: number;
+    passed: number;
+  };
+};
 
-export const evidenceCases = [
-  ...parseJsonl(deepSweRaw),
-  ...parseJsonl(terminalBenchRaw),
-];
+export const evidenceIndex = evidenceIndexJson as EvidenceSummary[];
 
-export function caseHref(item: EvidenceCase) {
+export function caseHref(item: Pick<EvidenceCase, "identity">) {
   const { benchmark, release, native_id: nativeId } = item.identity;
   return `/evidence/${encodeURIComponent(benchmark)}/${encodeURIComponent(release)}/${encodeURIComponent(nativeId)}`;
-}
-
-export function findEvidenceCase(
-  benchmark: string,
-  release: string,
-  nativeId: string,
-) {
-  return evidenceCases.find(
-    (item) =>
-      item.identity.benchmark === benchmark &&
-      item.identity.release === release &&
-      item.identity.native_id === nativeId,
-  );
 }
 
 export function benchmarkLabel(benchmark: string) {
   return benchmark === "deepswe" ? "DeepSWE" : "Terminal-Bench";
 }
 
-export function totalTrials(item: EvidenceCase) {
+export function totalTrials(item: EvidenceCase | EvidenceSummary) {
+  if ("outcome_summary" in item) return item.outcome_summary.trials;
   return item.outcomes.panel.reduce((sum, outcome) => sum + outcome.attempts, 0);
 }
 
-export function totalPasses(item: EvidenceCase) {
+export function totalPasses(item: EvidenceCase | EvidenceSummary) {
+  if ("outcome_summary" in item) return item.outcome_summary.passed;
   return item.outcomes.panel.reduce((sum, outcome) => sum + outcome.passed, 0);
 }

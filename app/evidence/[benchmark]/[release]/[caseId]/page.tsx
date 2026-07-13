@@ -8,8 +8,8 @@ import { notFound } from "next/navigation";
 import { EvidenceFooter, EvidenceHeader } from "../../../../evidence-chrome";
 import {
   benchmarkLabel,
-  findEvidenceCase,
 } from "../../../../evidence-data";
+import { findEvidenceCase } from "../../../../evidence-case-data";
 import { OutcomeBrowser } from "../../../../outcome-browser";
 
 function sourceName(url: string) {

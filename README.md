@@ -1,10 +1,6 @@
 # JustEnough
 
-JustEnough uses benchmark evidence to find the least expensive or fastest
-model configuration that can reliably complete a coding task.
-
-The project is at an early stage. The repository contains the frontend shell;
-benchmark ingestion, similarity search, and routing are not implemented yet.
+JustEnough indexes coding benchmark tasks and their published model outcomes.
 
 ## Development
 
@@ -20,6 +16,16 @@ Run the checks with:
 ```bash
 npm run lint
 npm test
+```
+
+## Corpus and deployment
+
+```bash
+npm run data:validate-corpus
+npm run data:build-index
+npm run data:upload-r2 -- justenough-corpus
+npm run deploy:cloudflare
+npm run validate:deployment -- https://justenough.minhuw.workers.dev
 ```
 
 ## Documentation
