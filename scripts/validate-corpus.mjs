@@ -2,6 +2,8 @@ import { execFileSync } from "node:child_process";
 import { readdir, readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
+import { difficultyFactorVocabulary } from "./profile-template.mjs";
+
 const root = new URL("../", import.meta.url);
 const sourceRoot =
   process.env.JUSTENOUGH_SOURCE_ROOT ??
@@ -57,13 +59,14 @@ const revisionKeys = [
 const profileKeys = [
   "title",
   "summary",
+  "description",
   "interaction",
   "intents",
   "technologies",
   "languages",
   "work_surfaces",
   "expected_artifacts",
-  "requirements",
+  "difficulty_factors",
   "observed_labels",
 ];
 const outcomesKeys = [
@@ -180,6 +183,12 @@ function checkString(value, path, errors) {
   return true;
 }
 
+function wordCount(value) {
+  return typeof value === "string" && value.trim()
+    ? value.trim().split(/\s+/).length
+    : 0;
+}
+
 function checkStringArray(value, path, errors, { min = 0, max } = {}) {
   if (!Array.isArray(value)) {
     errors.push(`${path} must be an array`);
@@ -204,6 +213,22 @@ function checkProfile(profile, spec, path, errors) {
   if (!checkKeys(profile, profileKeys, path, errors)) return;
   checkString(profile.title, `${path}.title`, errors);
   checkString(profile.summary, `${path}.summary`, errors);
+  checkString(profile.description, `${path}.description`, errors);
+  const summaryWords = wordCount(profile.summary);
+  if (summaryWords < 6 || summaryWords > 30) {
+    errors.push(`${path}.summary must contain 6-30 words`);
+  }
+  const descriptionWords = wordCount(profile.description);
+  if (descriptionWords < 25 || descriptionWords > 280) {
+    errors.push(`${path}.description must contain 25-280 words`);
+  }
+  if (
+    typeof profile.description === "string" &&
+    typeof profile.summary === "string" &&
+    !profile.description.startsWith(profile.summary)
+  ) {
+    errors.push(`${path}.description must begin with the summary`);
+  }
   if (!['repository', 'terminal'].includes(profile.interaction)) {
     errors.push(`${path}.interaction must be repository or terminal`);
   } else if (
@@ -225,10 +250,20 @@ function checkProfile(profile, spec, path, errors) {
     errors,
     { min: 1 },
   );
-  checkStringArray(profile.requirements, `${path}.requirements`, errors, {
-    min: 2,
-    max: 6,
-  });
+  if (
+    checkStringArray(
+      profile.difficulty_factors,
+      `${path}.difficulty_factors`,
+      errors,
+      { min: 1, max: 5 },
+    )
+  ) {
+    for (const factor of profile.difficulty_factors) {
+      if (!difficultyFactorVocabulary.includes(factor)) {
+        errors.push(`${path}.difficulty_factors contains an unknown factor: ${factor}`);
+      }
+    }
+  }
 
   if (!isObject(profile.observed_labels)) {
     errors.push(`${path}.observed_labels must be an object`);
@@ -252,8 +287,8 @@ function checkExtraction(extraction, path, errors) {
   ) {
     errors.push(`${path}.method does not match the extraction contract`);
   }
-  if (extraction.version !== "full-1") {
-    errors.push(`${path}.version must be full-1`);
+  if (extraction.version !== "full-2") {
+    errors.push(`${path}.version must be full-2`);
   }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(extraction.date ?? "")) {
     errors.push(`${path}.date must be YYYY-MM-DD`);
@@ -335,8 +370,8 @@ function checkOutcome(outcome, spec, path, errors) {
 function checkRecord(record, spec, trees, index, errors) {
   const prefix = `${spec.key}[${index}]`;
   if (!checkKeys(record, topLevelKeys, prefix, errors)) return;
-  if (record.schema_version !== "0.2") {
-    errors.push(`${prefix}.schema_version must be 0.2`);
+  if (record.schema_version !== "1") {
+    errors.push(`${prefix}.schema_version must be 1`);
   }
 
   if (checkKeys(record.identity, identityKeys, `${prefix}.identity`, errors)) {

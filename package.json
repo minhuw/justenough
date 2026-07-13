@@ -16,7 +16,8 @@
     "data:extract:deepswe": "node scripts/extract-deepswe.mjs",
     "data:extract:terminal-bench": "node scripts/extract-terminal-bench.mjs",
     "data:validate-corpus": "node scripts/validate-corpus.mjs",
-    "data:build-corpus": "node scripts/build-corpus-manifest.mjs"
+    "data:build-corpus": "node scripts/build-corpus-manifest.mjs",
+    "data:build-fixtures": "node scripts/build-normalization-fixtures.mjs"
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",

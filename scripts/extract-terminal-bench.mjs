@@ -2,6 +2,11 @@ import { execFileSync } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { basename, join } from "node:path";
 
+import {
+  buildDescription,
+  deriveDifficultyFactors,
+} from "./profile-template.mjs";
+
 const SOURCE_DIR =
   process.env.TERMINAL_BENCH_SOURCE ??
   "/private/tmp/justenough-extraction-20260713/terminal-bench-2-1";
@@ -13,17 +18,33 @@ const REVISION = "d49e28f1e4ddd13d289e85a5f312a66750951932";
 const REPOSITORY = "https://github.com/harbor-framework/terminal-bench-2-1";
 const EXTRACTION_DATE = "2026-07-13";
 
-function p(title, summary, intents, technologies, languages, workSurfaces, expectedArtifacts, requirements) {
+function p(
+  title,
+  summary,
+  intents,
+  technologies,
+  languages,
+  workSurfaces,
+  expectedArtifacts,
+  demandClauses,
+) {
   return {
     title,
     summary,
+    description: buildDescription(summary, demandClauses),
     interaction: "terminal",
     intents,
     technologies,
     languages,
     work_surfaces: workSurfaces,
     expected_artifacts: expectedArtifacts,
-    requirements,
+    difficulty_factors: deriveDifficultyFactors({
+      summary,
+      demandClauses,
+      technologies,
+      languages,
+      workSurfaces,
+    }),
   };
 }
 
@@ -1165,8 +1186,8 @@ function validate(records, taskIds) {
     identities.add(id);
     assert(record.revision.case_tree === caseTree(id), `Case tree mismatch for ${id}`);
     const profile = record.profile;
-    for (const field of ["title", "summary", "interaction"]) assert(profile[field], `${id}: empty ${field}`);
-    for (const field of ["intents", "technologies", "work_surfaces", "expected_artifacts", "requirements"]) {
+    for (const field of ["title", "summary", "description", "interaction"]) assert(profile[field], `${id}: empty ${field}`);
+    for (const field of ["intents", "technologies", "work_surfaces", "expected_artifacts", "difficulty_factors"]) {
       assert(Array.isArray(profile[field]) && profile[field].length > 0, `${id}: empty ${field}`);
     }
     assert(record.outcomes.panel.length === 20, `${id}: expected 20 panel rows`);
@@ -1211,7 +1232,7 @@ async function main() {
         .map((submission) => buildOutcome(submission, nativeId))
         .sort((a, b) => a.configuration.localeCompare(b.configuration));
       return {
-        schema_version: "0.2",
+        schema_version: "1",
         identity: { benchmark: "terminal-bench", release: "2.1", native_id: nativeId },
         revision: {
           source_revision: REVISION,
@@ -1227,19 +1248,20 @@ async function main() {
         },
         extraction: {
           method: "frontier LLM semantic extraction with pinned-source review",
-          version: "full-1",
+          version: "full-2",
           date: EXTRACTION_DATE,
           observed_fields: ["identity", "revision", "profile.observed_labels", "outcomes"],
           derived_fields: [
             "profile.title",
             "profile.summary",
+            "profile.description",
             "profile.interaction",
             "profile.intents",
             "profile.technologies",
             "profile.languages",
             "profile.work_surfaces",
             "profile.expected_artifacts",
-            "profile.requirements",
+            "profile.difficulty_factors",
           ],
           omitted: [
             "instruction text",

@@ -1,7 +1,5 @@
 import { createHash } from "node:crypto";
 import { readFile, rename, writeFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
-import { gzipSync } from "node:zlib";
 
 import { releases, validateCorpus } from "./validate-corpus.mjs";
 
@@ -27,48 +25,51 @@ async function main() {
     return;
   }
 
-  const corpora = [];
-  const gzipWrites = [];
+  const benchmarks = [];
+  const objects = [];
   for (const spec of releases) {
-    const data = await readFile(spec.file);
-    const gzip = gzipSync(data, { level: 9, mtime: 0 });
-    const name = fileURLToPath(spec.file).split("/").at(-1);
-    const gzipFile = new URL(`corpus/${name}.gz`, root);
-    gzipWrites.push(writeAtomically(gzipFile, gzip));
+    const records = (await readFile(spec.file, "utf8"))
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map(JSON.parse);
     const summary = validation.corpora[spec.key];
-    corpora.push({
-      benchmark: spec.benchmark,
+    benchmarks.push({
+      name: spec.key,
+      benchmark_family: spec.benchmark,
       release: spec.release,
-      object_path: `corpus/v1/${name}`,
-      media_type: "application/x-ndjson",
-      byte_size: data.byteLength,
-      sha256: sha256(data),
+      repository: spec.repository,
+      source_revision: spec.revision,
       record_count: summary.records,
       configuration_count: summary.configurations,
       model_count: summary.models,
       trial_count: summary.trials,
-      gzip: {
-        object_path: `corpus/v1/${name}.gz`,
-        media_type: "application/gzip",
-        byte_size: gzip.byteLength,
-        sha256: sha256(gzip),
-      },
     });
+    for (const record of records) {
+      const nativeId = record.identity.native_id;
+      if (!/^[a-z0-9][a-z0-9._-]*$/.test(nativeId)) {
+        throw new Error(`${spec.key}/${nativeId} is not safe for an R2 object key`);
+      }
+      const body = Buffer.from(`${JSON.stringify(record)}\n`);
+      objects.push({
+        benchmark: spec.key,
+        native_id: nativeId,
+        object_path: `datasets/v1/${spec.key}/${nativeId}.json`,
+        media_type: "application/json",
+        byte_size: body.byteLength,
+        sha256: sha256(body),
+      });
+    }
   }
-  await Promise.all(gzipWrites);
 
   const manifest = {
     manifest_version: "1",
+    dataset_version: "v1",
     generated_at: new Date().toISOString(),
-    schema_version: "0.2",
-    extraction_version: "full-1",
-    sources: Object.fromEntries(
-      releases.map((spec) => [
-        spec.key,
-        { repository: spec.repository, revision: spec.revision },
-      ]),
-    ),
-    corpora,
+    schema_version: "1",
+    extraction_version: "full-2",
+    benchmarks,
+    objects,
     validation: {
       passed: true,
       validation_version: validation.validation_version,
@@ -81,7 +82,7 @@ async function main() {
     `${JSON.stringify(manifest, null, 2)}\n`,
   );
   process.stdout.write(
-    `${JSON.stringify({ ok: true, manifest: "corpus/manifest.json", corpora }, null, 2)}\n`,
+    `${JSON.stringify({ ok: true, manifest: "corpus/manifest.json", benchmarks, objects: objects.length }, null, 2)}\n`,
   );
 }
 

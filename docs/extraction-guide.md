@@ -90,12 +90,12 @@ Do not retain author names or email addresses.
 
 ## Record schema
 
-Use `schema_version: "0.2"`. Omit unavailable optional keys rather than writing
+Use `schema_version: "1"`. Omit unavailable optional keys rather than writing
 `null`, an empty placeholder, or an invented value.
 
 ```json
 {
-  "schema_version": "0.2",
+  "schema_version": "1",
   "identity": {
     "benchmark": "deepswe | terminal-bench",
     "release": "v1.1 | 2.1",
@@ -113,13 +113,14 @@ Use `schema_version: "0.2"`. Omit unavailable optional keys rather than writing
   "profile": {
     "title": "short task title",
     "summary": "one factual sentence",
+    "description": "source-grounded task demand",
     "interaction": "repository | terminal",
     "intents": ["one to four normalized intents"],
     "technologies": ["explicitly relevant technologies"],
     "languages": ["explicit languages or data formats"],
     "work_surfaces": ["one to five affected surfaces"],
     "expected_artifacts": ["observable deliverables"],
-    "requirements": ["two to six distinguishing requirements"],
+    "difficulty_factors": ["one to five normalized difficulty factors"],
     "observed_labels": {"upstream_label": "upstream_value"}
   },
   "outcomes": {
@@ -130,7 +131,7 @@ Use `schema_version: "0.2"`. Omit unavailable optional keys rather than writing
   },
   "extraction": {
     "method": "frontier LLM semantic extraction with pinned-source review",
-    "version": "full-1",
+    "version": "full-2",
     "date": "YYYY-MM-DD",
     "observed_fields": [],
     "derived_fields": [],
@@ -177,13 +178,25 @@ Do not add `sample`; these files cover complete releases.
 
 ### Summary
 
-- Write one sentence, normally 15–35 words.
-- State the operation, target, and the most important success constraint.
+- Write one sentence, normally 6–30 words.
+- State the operation, target, and intended result.
 - DeepSWE: prefer the observed `display_description` when it is accurate and
   self-contained. Copying that observed field is better than paraphrasing it.
 - Terminal-Bench: derive the sentence from the agent-visible instruction.
 - Do not mention the benchmark, evaluator, agent, LLM, extraction process, or
   expected difficulty.
+
+### Description
+
+- Begin with the summary and add the source-grounded demand clauses needed to
+  understand the task without opening the full instruction.
+- Preserve relationships between the requested change, affected system,
+  expected result, and material constraints.
+- Prefer direct sentences. Do not add framing such as “the task asks,”
+  rationale, implementation advice, or a subjective difficulty judgment.
+- Include exact paths, versions, thresholds, or prohibitions only when they
+  materially define the demand or its difficulty.
+- Target 25–280 words. Do not pad a simple task to reach an arbitrary length.
 
 ### Intents
 
@@ -238,15 +251,41 @@ Use one to five items. Do not restate technologies as surfaces.
 - When the result is system state rather than a file, use a short noun phrase
   such as `running SSH service`.
 
-### Requirements
+### Difficulty factors
 
-- Extract two to six requirements that distinguish this case from a generic
-  task with the same title.
-- Preserve numeric thresholds, versions, paths, ordering, compatibility,
-  regression behavior, and explicit “must not change” constraints.
-- Write compact imperative or result clauses without terminal punctuation.
-- Combine tightly coupled clauses; do not copy the whole instruction.
-- Do not use solution, verifier, or test knowledge.
+Difficulty factors explain which source-observed properties make the task hard
+to solve. They are retrieval facets, not a predicted difficulty score. Extract
+one to five factors from this fixed vocabulary:
+
+- `reverse engineering from incomplete or indirect evidence`
+- `legacy compatibility with modern tooling or runtimes`
+- `cross-platform or cross-architecture execution`
+- `concurrency, cancellation, or distributed-state coordination`
+- `recursive delegation and cross-agent error propagation`
+- `security-sensitive or adversarial behavior`
+- `strict behavioral compatibility or exact-output validation`
+- `layered configuration precedence and inheritance semantics`
+- `quantitative performance, accuracy, or resource constraints`
+- `native compilation and dependency integration`
+- `low-level memory safety and lifecycle debugging`
+- `stateful behavior and data-integrity constraints`
+- `changes span multiple components or interfaces`
+- `consistent behavior across lifecycle stages or execution modes`
+- `composite state and lifecycle-transition semantics`
+- `deferred mutation ordering and visibility semantics`
+- `incremental dependency tracking and transition semantics`
+- `nested schema transformation and naming-collision handling`
+- `multidimensional indexing and boundary-condition semantics`
+- `instrumentation must cover success and failure paths without changing behavior`
+- `data-dependent inference with null and type edge cases`
+- `environment provisioning and end-to-end integration`
+- `specialized algorithmic or domain reasoning`
+- `ranking or retrieval over incomplete external evidence`
+- `cross-language or cross-format integration`
+
+Do not infer a scalar difficulty label. Published model outcomes remain the
+empirical evidence of difficulty. Do not add a generic factor merely to fill
+the array; every selected factor must be supported by the agent-visible task.
 
 ### Observed labels
 
@@ -365,7 +404,7 @@ must still have 20 panel rows. Sort by `configuration`.
 Populate `extraction` consistently:
 
 - `method`: `frontier LLM semantic extraction with pinned-source review`
-- `version`: `full-1`
+- `version`: `full-2`
 - `date`: actual UTC extraction date
 - `observed_fields`: identity, revision fields, copied profile fields,
   observed labels, and outcomes
@@ -386,8 +425,11 @@ An extraction run is complete only when all checks pass:
 - unique `(benchmark, release, native_id)` identities
 - native IDs match the pinned repository task directories
 - records sorted by native ID
-- non-empty title, summary, interaction, intents, technologies, work surfaces,
-  expected artifacts, and requirements
+- non-empty title, summary, description, interaction, intents, technologies,
+  work surfaces, expected artifacts, and difficulty factors
+- summary contains 6–30 words and description contains 25–280 words
+- description begins with the summary
+- every difficulty factor belongs to the fixed vocabulary above
 - no author email, solution text, verifier text, test text, trajectory, or patch
   content
 - every `case_tree` matches `git rev-parse`
@@ -421,23 +463,23 @@ Create `corpus/manifest.json` after both JSONL files pass validation. Include:
 - generation timestamp;
 - schema and extraction versions;
 - source repository URLs and revisions;
-- object path, media type, byte size, SHA-256, record count, configuration
-  count, model count, and trial count for each corpus;
+- benchmark-level record, configuration, model, and trial counts;
+- object path, media type, byte size, and SHA-256 for every case;
 - validation result.
 
-Create deterministic gzip copies with `gzip -n`. The R2 object layout is:
+The R2 object layout is:
 
 ```text
-corpus/v1/manifest.json
-corpus/v1/deepswe-v1.1.jsonl
-corpus/v1/deepswe-v1.1.jsonl.gz
-corpus/v1/terminal-bench-2.1.jsonl
-corpus/v1/terminal-bench-2.1.jsonl.gz
+datasets/v1/manifest.json
+datasets/v1/deepswe-v1.1/<native-id>.json
+datasets/v1/terminal-bench-2.1/<native-id>.json
 ```
 
-Upload only after local validation and digest generation. Create a new private
-R2 bucket for the corpus. Never run an interactive Wrangler login from an
-agent. If Wrangler is missing, install it with Homebrew and notify the user. If
+The manifest enumerates all 202 case keys and their byte sizes and SHA-256
+digests. Do not upload release snapshots or duplicate JSONL objects. Upload
+only after local validation and digest generation. Create a new private R2
+bucket for the corpus. Never run an interactive Wrangler login from an agent.
+If Wrangler is missing, install it with Homebrew and notify the user. If
 Wrangler is unauthenticated, notify the user and stop before bucket creation.
 
 ## Agent handoff checklist

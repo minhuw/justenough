@@ -1,60 +1,1655 @@
 {
   "manifest_version": "1",
-  "generated_at": "2026-07-13T08:32:32.055Z",
-  "schema_version": "0.2",
-  "extraction_version": "full-1",
-  "sources": {
-    "deepswe-v1.1": {
-      "repository": "https://github.com/datacurve-ai/deep-swe",
-      "revision": "6db64a40f3318d8659238ff34a8cc4b491c49205"
-    },
-    "terminal-bench-2.1": {
-      "repository": "https://github.com/harbor-framework/terminal-bench-2-1",
-      "revision": "d49e28f1e4ddd13d289e85a5f312a66750951932"
-    }
-  },
-  "corpora": [
+  "dataset_version": "v1",
+  "generated_at": "2026-07-13T09:16:17.794Z",
+  "schema_version": "1",
+  "extraction_version": "full-2",
+  "benchmarks": [
     {
-      "benchmark": "deepswe",
+      "name": "deepswe-v1.1",
+      "benchmark_family": "deepswe",
       "release": "v1.1",
-      "object_path": "corpus/v1/deepswe-v1.1.jsonl",
-      "media_type": "application/x-ndjson",
-      "byte_size": 1311734,
-      "sha256": "e66349d39051474f88783c68d88362cde80a53d8b32892dc3e66632c5e0f572f",
+      "repository": "https://github.com/datacurve-ai/deep-swe",
+      "source_revision": "6db64a40f3318d8659238ff34a8cc4b491c49205",
       "record_count": 113,
       "configuration_count": 41,
       "model_count": 13,
-      "trial_count": 18522,
-      "gzip": {
-        "object_path": "corpus/v1/deepswe-v1.1.jsonl.gz",
-        "media_type": "application/gzip",
-        "byte_size": 76805,
-        "sha256": "0dc5d5ee12b1b346b3b3747decac939128f2cc5560326a191db12acb0f265607"
-      }
+      "trial_count": 18522
     },
     {
-      "benchmark": "terminal-bench",
+      "name": "terminal-bench-2.1",
+      "benchmark_family": "terminal-bench",
       "release": "2.1",
-      "object_path": "corpus/v1/terminal-bench-2.1.jsonl",
-      "media_type": "application/x-ndjson",
-      "byte_size": 1213401,
-      "sha256": "7d26df1a27ccd4c8630717216521a67c2204e4dd9a7dc3a10c23bec89679b328",
+      "repository": "https://github.com/harbor-framework/terminal-bench-2-1",
+      "source_revision": "d49e28f1e4ddd13d289e85a5f312a66750951932",
       "record_count": 89,
       "configuration_count": 20,
       "model_count": 13,
-      "trial_count": 8902,
-      "gzip": {
-        "object_path": "corpus/v1/terminal-bench-2.1.jsonl.gz",
-        "media_type": "application/gzip",
-        "byte_size": 44476,
-        "sha256": "71fa2a0cbad309d80bb758e57f4078bd6769e0f0abb24afcd1dbe2b8655f7f21"
-      }
+      "trial_count": 8902
+    }
+  ],
+  "objects": [
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "abs-module-cache-flags",
+      "object_path": "datasets/v1/deepswe-v1.1/abs-module-cache-flags.json",
+      "media_type": "application/json",
+      "byte_size": 12037,
+      "sha256": "aa4f7ef3071f6e1ed96e24f9d808599264134b785fc438d12856ff3201e9a6dc"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "abs-stepped-slices",
+      "object_path": "datasets/v1/deepswe-v1.1/abs-stepped-slices.json",
+      "media_type": "application/json",
+      "byte_size": 11632,
+      "sha256": "e46a081fab15d18d70b4947262c5873df3d2563c853a3c1e45cceda041e545e3"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "actionlint-action-pinning-lint",
+      "object_path": "datasets/v1/deepswe-v1.1/actionlint-action-pinning-lint.json",
+      "media_type": "application/json",
+      "byte_size": 11783,
+      "sha256": "f6b3d38ab3cda3f3d8caaed47aebe93e7194ef13e3cdbdd7792263d9be3078a0"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "adaptix-name-mapping-aliases",
+      "object_path": "datasets/v1/deepswe-v1.1/adaptix-name-mapping-aliases.json",
+      "media_type": "application/json",
+      "byte_size": 11706,
+      "sha256": "766da436002e5fa7d127728b801f342ae5c4ed1f299c12ec0dd319835c5e24fc"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "aiomonitor-task-snapshots-diff",
+      "object_path": "datasets/v1/deepswe-v1.1/aiomonitor-task-snapshots-diff.json",
+      "media_type": "application/json",
+      "byte_size": 12029,
+      "sha256": "e27b6f66365b2ff300ee21e055362aacb20e37a58f1b2447ad249e17c37b4558"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "anko-default-function-arguments",
+      "object_path": "datasets/v1/deepswe-v1.1/anko-default-function-arguments.json",
+      "media_type": "application/json",
+      "byte_size": 11827,
+      "sha256": "9d814e683c10a69e37ca047a23e662b763241ded66c969463d456284a921b76c"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "anko-typed-variable-bindings",
+      "object_path": "datasets/v1/deepswe-v1.1/anko-typed-variable-bindings.json",
+      "media_type": "application/json",
+      "byte_size": 11666,
+      "sha256": "dc21ecfc3613df6ed5a6ab5686efa1108f89130a60de4dca798acadf5076667d"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "arcane-drift-detection-baselines",
+      "object_path": "datasets/v1/deepswe-v1.1/arcane-drift-detection-baselines.json",
+      "media_type": "application/json",
+      "byte_size": 11912,
+      "sha256": "bd9fce969639b32e78a36a6c26c91cc922bacf694cdf398aaa6f0db2593b0b8c"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "arktype-json-schema-refs-dependencies",
+      "object_path": "datasets/v1/deepswe-v1.1/arktype-json-schema-refs-dependencies.json",
+      "media_type": "application/json",
+      "byte_size": 11591,
+      "sha256": "a5f35f28bd47c7152b3ae1d76e1ff3e1929848ce59dc0f7414068dcd9ce0e7a9"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "awilix-async-container-initialization",
+      "object_path": "datasets/v1/deepswe-v1.1/awilix-async-container-initialization.json",
+      "media_type": "application/json",
+      "byte_size": 12130,
+      "sha256": "97841789b512d6e764619068d94b001ff1faeed66d46c789f8414f51d640200f"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "bandit-incremental-cache-control",
+      "object_path": "datasets/v1/deepswe-v1.1/bandit-incremental-cache-control.json",
+      "media_type": "application/json",
+      "byte_size": 11907,
+      "sha256": "0d6086345a63387d4ec6fa04e89e02df0faee19b72f53aadb3580ccb03ce67e9"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "bandit-interprocedural-taint-checks",
+      "object_path": "datasets/v1/deepswe-v1.1/bandit-interprocedural-taint-checks.json",
+      "media_type": "application/json",
+      "byte_size": 11715,
+      "sha256": "78bd8c4c47576b6c45ab6c8069ce383f499aeb0814961e91bba41f30e4d8639a"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "bandit-structured-nosec-directives",
+      "object_path": "datasets/v1/deepswe-v1.1/bandit-structured-nosec-directives.json",
+      "media_type": "application/json",
+      "byte_size": 11922,
+      "sha256": "0a8b52d256f13463027884b9b66fa60999477616b94cac25d5b4ac77d6e1c0e7"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "boa-hierarchical-evaluation-cancellation",
+      "object_path": "datasets/v1/deepswe-v1.1/boa-hierarchical-evaluation-cancellation.json",
+      "media_type": "application/json",
+      "byte_size": 12007,
+      "sha256": "7b8443f7c590e2678dff4ff9af18bee9d06fdb40e2a6beace5d370051707413d"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "cattrs-partial-structuring-recovery",
+      "object_path": "datasets/v1/deepswe-v1.1/cattrs-partial-structuring-recovery.json",
+      "media_type": "application/json",
+      "byte_size": 11935,
+      "sha256": "55b0001e6fdaf64b4f291214e0243d1e06db4ead570b726b37d17c291c7fa141"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "clack-async-autocomplete-options",
+      "object_path": "datasets/v1/deepswe-v1.1/clack-async-autocomplete-options.json",
+      "media_type": "application/json",
+      "byte_size": 12212,
+      "sha256": "f4f7b3fc3dd6206cc913f607551aedc9df7fdad0422a1541fd73e6c8b14f14c0"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "claude-code-by-agents-recursive-delegation",
+      "object_path": "datasets/v1/deepswe-v1.1/claude-code-by-agents-recursive-delegation.json",
+      "media_type": "application/json",
+      "byte_size": 11758,
+      "sha256": "d364ed20aebebf5fa77f6878f87b76e4b7cd7ceaa2912684a8ff22aa9f82a4dc"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "cliffy-config-file-parsing",
+      "object_path": "datasets/v1/deepswe-v1.1/cliffy-config-file-parsing.json",
+      "media_type": "application/json",
+      "byte_size": 11859,
+      "sha256": "3d788994635a58174c9e7968f57d1eeb3929cb3db408aa43687bcdf69d7b24cd"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "csstree-shorthand-expansion-compression",
+      "object_path": "datasets/v1/deepswe-v1.1/csstree-shorthand-expansion-compression.json",
+      "media_type": "application/json",
+      "byte_size": 11912,
+      "sha256": "d581a34e42c2b35da45d4aabfd52933e74a9019a8cec158067d33f7a4edf81ec"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "dasel-html-document-format",
+      "object_path": "datasets/v1/deepswe-v1.1/dasel-html-document-format.json",
+      "media_type": "application/json",
+      "byte_size": 11609,
+      "sha256": "575b33d2649d17a854afc1206e388b870e33fb2984f95670a307d955d4b2d606"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "dateutil-rfc5545-timezone-interop",
+      "object_path": "datasets/v1/deepswe-v1.1/dateutil-rfc5545-timezone-interop.json",
+      "media_type": "application/json",
+      "byte_size": 12189,
+      "sha256": "33204cc7b9dbf49593678a9a9e3112137e98ee3ea0748bdb6a2279ea4fc49247"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "drizzle-orm-window-function-builders",
+      "object_path": "datasets/v1/deepswe-v1.1/drizzle-orm-window-function-builders.json",
+      "media_type": "application/json",
+      "byte_size": 11896,
+      "sha256": "49086a28fdd1b89c9ec0843ca24def545c2f04620474a11ba6b79f8f750a2e7e"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "dynamodb-toolbox-conditional-attribute-requirements",
+      "object_path": "datasets/v1/deepswe-v1.1/dynamodb-toolbox-conditional-attribute-requirements.json",
+      "media_type": "application/json",
+      "byte_size": 12366,
+      "sha256": "90099f8a09f9d51de959fbc078c96f5505f1de9c991c76d0f14c218b637a6036"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "dynamodb-toolbox-lazy-recursive-schemas",
+      "object_path": "datasets/v1/deepswe-v1.1/dynamodb-toolbox-lazy-recursive-schemas.json",
+      "media_type": "application/json",
+      "byte_size": 11977,
+      "sha256": "8e0974e0ca2eee4284e21376436a0f9ac148c500ba49fa6a5ecd99090e634da3"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "effect-sse-httpapi-streaming",
+      "object_path": "datasets/v1/deepswe-v1.1/effect-sse-httpapi-streaming.json",
+      "media_type": "application/json",
+      "byte_size": 11674,
+      "sha256": "9faec8224b7e30b16038064f048b6c538f9bc3f5208c05aa94368526a26c9919"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "eicrud-keyset-pagination-cursor",
+      "object_path": "datasets/v1/deepswe-v1.1/eicrud-keyset-pagination-cursor.json",
+      "media_type": "application/json",
+      "byte_size": 11606,
+      "sha256": "46df8ea1b0b432a2903cd1cd59bfb5cea3db9b002a1374e6acebf5780c7fce7c"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "etree-xml-diff-patch",
+      "object_path": "datasets/v1/deepswe-v1.1/etree-xml-diff-patch.json",
+      "media_type": "application/json",
+      "byte_size": 11757,
+      "sha256": "d267ecc2b862bdfef047f58a4758207e5b916a7139dd2c1b07a8a1687e5cf243"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "expr-try-catch-errors",
+      "object_path": "datasets/v1/deepswe-v1.1/expr-try-catch-errors.json",
+      "media_type": "application/json",
+      "byte_size": 11766,
+      "sha256": "c83738f1fba1aad7c8d9599f8dd3c5742382ea10991ceb6af4dcf239cb34285c"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "fastapi-deprecation-response-headers",
+      "object_path": "datasets/v1/deepswe-v1.1/fastapi-deprecation-response-headers.json",
+      "media_type": "application/json",
+      "byte_size": 11911,
+      "sha256": "8a798d96b1c9c75394405ac8bcf25de3212d30df67843d2217a4728f53076b6a"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "fastapi-implicit-head-options",
+      "object_path": "datasets/v1/deepswe-v1.1/fastapi-implicit-head-options.json",
+      "media_type": "application/json",
+      "byte_size": 11902,
+      "sha256": "45b0d994bf422f23454b9f124bfab565f51136d4aa57bdd282b13f086f01fcda"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "fd-deterministic-multi-key-sorting",
+      "object_path": "datasets/v1/deepswe-v1.1/fd-deterministic-multi-key-sorting.json",
+      "media_type": "application/json",
+      "byte_size": 11877,
+      "sha256": "eaba182e385bf5b96dfbaf4374da5d75b7394e80f34858db434a30c12e3d41ae"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "geo-shapeindex-serialization",
+      "object_path": "datasets/v1/deepswe-v1.1/geo-shapeindex-serialization.json",
+      "media_type": "application/json",
+      "byte_size": 11632,
+      "sha256": "2572e64c370c8605bf04eba5a79d7edb957f7e29548a91bcd6dcf2cf4f3149ac"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "go-critic-doc-link-checker",
+      "object_path": "datasets/v1/deepswe-v1.1/go-critic-doc-link-checker.json",
+      "media_type": "application/json",
+      "byte_size": 11877,
+      "sha256": "ea76f98249429ad13b3e1c0dd839d4321ded3191d2ae85e2169e5e2b6591a66d"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "go-genai-streamed-function-args",
+      "object_path": "datasets/v1/deepswe-v1.1/go-genai-streamed-function-args.json",
+      "media_type": "application/json",
+      "byte_size": 12151,
+      "sha256": "cf00315c399069f5b5bfc82c9ed3f0b372aec8b17ea8bfbce5174bdf5bb1d9f0"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "go-git-worktree-merge-conflicts",
+      "object_path": "datasets/v1/deepswe-v1.1/go-git-worktree-merge-conflicts.json",
+      "media_type": "application/json",
+      "byte_size": 11682,
+      "sha256": "d6418697c1134f84195fe3df3ae626d9456e8b66a4f9afd0ba009df671580ab2"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "goreleaser-retry-publish-auditing",
+      "object_path": "datasets/v1/deepswe-v1.1/goreleaser-retry-publish-auditing.json",
+      "media_type": "application/json",
+      "byte_size": 11739,
+      "sha256": "62d7df438befd07f7857f3f5b024c934d7cd5a190ea22b932d740607d9e1872d"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "gql-incremental-graphql-delivery",
+      "object_path": "datasets/v1/deepswe-v1.1/gql-incremental-graphql-delivery.json",
+      "media_type": "application/json",
+      "byte_size": 11954,
+      "sha256": "9b9826834399df9cac896e711186ad42f79962dfca3330b34f8c054376f59eb5"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "happy-dom-abort-pending-body-reads",
+      "object_path": "datasets/v1/deepswe-v1.1/happy-dom-abort-pending-body-reads.json",
+      "media_type": "application/json",
+      "byte_size": 11841,
+      "sha256": "baa52249d3c729b09fe2893fec130e95c33eae3af3f2ec685aab8ff7c45e4a69"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "happy-dom-deterministic-intersectionobserver",
+      "object_path": "datasets/v1/deepswe-v1.1/happy-dom-deterministic-intersectionobserver.json",
+      "media_type": "application/json",
+      "byte_size": 11754,
+      "sha256": "a55de5e88578da3f22e30b824d9e2ee5bcb00577a9756b1510f68a34e8ba5943"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "helm-array-merge-strategies",
+      "object_path": "datasets/v1/deepswe-v1.1/helm-array-merge-strategies.json",
+      "media_type": "application/json",
+      "byte_size": 12092,
+      "sha256": "d3fec6f24cfb320427b45f548375678830c8541a8ec591d693a89ee84d269649"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "helm-unified-manifest-stream",
+      "object_path": "datasets/v1/deepswe-v1.1/helm-unified-manifest-stream.json",
+      "media_type": "application/json",
+      "byte_size": 11632,
+      "sha256": "0a75f85cc4fdd865c0815343074f12ca4f73a2ff51ada9e3a557af9b4d001d2b"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "httpx-deterministic-cookie-store",
+      "object_path": "datasets/v1/deepswe-v1.1/httpx-deterministic-cookie-store.json",
+      "media_type": "application/json",
+      "byte_size": 11954,
+      "sha256": "562a277ade8a3f1964395686dd5ec2f1daf1649a22783cfdf3552fb662a11a38"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "httpx-multipart-response-parsing",
+      "object_path": "datasets/v1/deepswe-v1.1/httpx-multipart-response-parsing.json",
+      "media_type": "application/json",
+      "byte_size": 11847,
+      "sha256": "cea0ee0577d9714bf2d2360a5db0898aa92ac608d8d695801569ce5620faed5e"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "httpx-streaming-json-iteration",
+      "object_path": "datasets/v1/deepswe-v1.1/httpx-streaming-json-iteration.json",
+      "media_type": "application/json",
+      "byte_size": 11775,
+      "sha256": "4724ebc6d2e36294b6e704764eab0e2ccaf9a0dbdc19758ee77c71d91aba4add"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "igel-persist-feature-schema",
+      "object_path": "datasets/v1/deepswe-v1.1/igel-persist-feature-schema.json",
+      "media_type": "application/json",
+      "byte_size": 11815,
+      "sha256": "6d30fd614ffde2674bca4437f2518d3490d738b19b4937975a73c38f9a1482d9"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "ink-grid-box-layout",
+      "object_path": "datasets/v1/deepswe-v1.1/ink-grid-box-layout.json",
+      "media_type": "application/json",
+      "byte_size": 11816,
+      "sha256": "56febe88b5157eb882a1ada0e16833ce6c51c965c478b4af634c9953e2f0f113"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "ipython-session-bundle-replay",
+      "object_path": "datasets/v1/deepswe-v1.1/ipython-session-bundle-replay.json",
+      "media_type": "application/json",
+      "byte_size": 11709,
+      "sha256": "3e12b494b6523aecce1b9be288ac7569fbbeef4079e3698c5b2b32c12b8f217e"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "katex-multicolumn-array-spans",
+      "object_path": "datasets/v1/deepswe-v1.1/katex-multicolumn-array-spans.json",
+      "media_type": "application/json",
+      "byte_size": 11760,
+      "sha256": "5396ee4dbdb878ec59240d508beda945c378e44044ea37befcf56b798f285862"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "kcp-go-multiplexed-kcp-streams",
+      "object_path": "datasets/v1/deepswe-v1.1/kcp-go-multiplexed-kcp-streams.json",
+      "media_type": "application/json",
+      "byte_size": 11728,
+      "sha256": "36879915822f642c0f0abf65af079b3ca1ee9a66d5b6848dbbab7940d2ca21bc"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "kea-atomic-signal-selectors",
+      "object_path": "datasets/v1/deepswe-v1.1/kea-atomic-signal-selectors.json",
+      "media_type": "application/json",
+      "byte_size": 12366,
+      "sha256": "33f0565b3759729c4eecd5852203f13a40d1d71137055626e2c4a5be0e3893c7"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "kgateway-consistent-hash-policy",
+      "object_path": "datasets/v1/deepswe-v1.1/kgateway-consistent-hash-policy.json",
+      "media_type": "application/json",
+      "byte_size": 11897,
+      "sha256": "3868b43d757ec23bc7f1cbaeea21ffde55a447a3760371021b155a4062c9ba0c"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "kombu-single-active-consumer-priority",
+      "object_path": "datasets/v1/deepswe-v1.1/kombu-single-active-consumer-priority.json",
+      "media_type": "application/json",
+      "byte_size": 12103,
+      "sha256": "1647026d2ddab17231b9ca86210af2a1874c23b337b6ddb4ba0bb8aff006d8e6"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "kombu-virtual-queue-dead-lettering",
+      "object_path": "datasets/v1/deepswe-v1.1/kombu-virtual-queue-dead-lettering.json",
+      "media_type": "application/json",
+      "byte_size": 11787,
+      "sha256": "12bdad0079754d4a986f3be416afb1bbc69f32a128f420b4a5c69925e10ef31a"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "koota-composite-trait-aspects",
+      "object_path": "datasets/v1/deepswe-v1.1/koota-composite-trait-aspects.json",
+      "media_type": "application/json",
+      "byte_size": 11597,
+      "sha256": "79fff94ce6de55fcf91f7886c3463433be8dd66a30423dc626b7c79cf09d29f6"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "koota-deferred-mutation-buffer",
+      "object_path": "datasets/v1/deepswe-v1.1/koota-deferred-mutation-buffer.json",
+      "media_type": "application/json",
+      "byte_size": 11680,
+      "sha256": "e27c71a3787afbaa3f7e4efc7b4dd4e5e5c389b37e5974dfa76652bd66c4fe50"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "koota-entity-snapshot-rollback",
+      "object_path": "datasets/v1/deepswe-v1.1/koota-entity-snapshot-rollback.json",
+      "media_type": "application/json",
+      "byte_size": 11676,
+      "sha256": "6fd4605d76637efae45a3ff5a772d6045cadf57102c286bc8c122372e7c536d2"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "koota-pair-relation-tracking",
+      "object_path": "datasets/v1/deepswe-v1.1/koota-pair-relation-tracking.json",
+      "media_type": "application/json",
+      "byte_size": 11705,
+      "sha256": "613b41b9af3a97ae0bf90de6dcf86acc85fe6c88f66349158a3a756cf363b828"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "koota-query-predicates",
+      "object_path": "datasets/v1/deepswe-v1.1/koota-query-predicates.json",
+      "media_type": "application/json",
+      "byte_size": 11448,
+      "sha256": "0f292862beadc91180281409f9debf2d9f25e87e1fed621e56d2b8546d744de9"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "kysely-window-grouping-helpers",
+      "object_path": "datasets/v1/deepswe-v1.1/kysely-window-grouping-helpers.json",
+      "media_type": "application/json",
+      "byte_size": 11718,
+      "sha256": "e28396e7ec036d5a0b892e2df6ab81c0a90e9a09c65bb1ae71b0744af0aca3d3"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "langchain-request-coalescing",
+      "object_path": "datasets/v1/deepswe-v1.1/langchain-request-coalescing.json",
+      "media_type": "application/json",
+      "byte_size": 11956,
+      "sha256": "0f1a32339287d84c759164c288f050a146975b17988a9aba2ed6a85a4b56aac2"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "mashumaro-flattened-dataclass-fields",
+      "object_path": "datasets/v1/deepswe-v1.1/mashumaro-flattened-dataclass-fields.json",
+      "media_type": "application/json",
+      "byte_size": 11695,
+      "sha256": "d2713b3bb20ff148fdc4ee40e37bb96db8089314ef5a2f900c76d2fe981d5105"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "meriyah-explicit-resource-declarations",
+      "object_path": "datasets/v1/deepswe-v1.1/meriyah-explicit-resource-declarations.json",
+      "media_type": "application/json",
+      "byte_size": 11717,
+      "sha256": "3ec8d60450577306c5d625a5c18297242f72fea79e3fd119ec92cbed29716a5e"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "mnamer-daemon-watch-lifecycle",
+      "object_path": "datasets/v1/deepswe-v1.1/mnamer-daemon-watch-lifecycle.json",
+      "media_type": "application/json",
+      "byte_size": 11893,
+      "sha256": "a61b9be0415e4383713421ad160b2667e0c5a2b8fd245af03e872cc0c9cd351d"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "mobly-grouped-test-barriers",
+      "object_path": "datasets/v1/deepswe-v1.1/mobly-grouped-test-barriers.json",
+      "media_type": "application/json",
+      "byte_size": 11941,
+      "sha256": "8ab09271d88c2a2423d7582328160c7f10dbfc45d507e3b7d3e5ab618daf65bf"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "narwhals-rolling-window-suite",
+      "object_path": "datasets/v1/deepswe-v1.1/narwhals-rolling-window-suite.json",
+      "media_type": "application/json",
+      "byte_size": 11944,
+      "sha256": "5d8509c5b661ca6ac0dbf9068fcb869da1cd5eedaa6d60bb8bd84a0f07251d81"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "numba-stencil-boundary-modes",
+      "object_path": "datasets/v1/deepswe-v1.1/numba-stencil-boundary-modes.json",
+      "media_type": "application/json",
+      "byte_size": 11466,
+      "sha256": "e989e9b56a3e27f81e01649d7794078fa2922c2132220919e6d29250a5022d2f"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "obsidian-linter-auto-table-of-contents",
+      "object_path": "datasets/v1/deepswe-v1.1/obsidian-linter-auto-table-of-contents.json",
+      "media_type": "application/json",
+      "byte_size": 11719,
+      "sha256": "a954a39ef67ad50869ff19e7ebed78dd64f325ca76a4212cd2412bc42dc9c6f4"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "obsidian-linter-link-format-conversion",
+      "object_path": "datasets/v1/deepswe-v1.1/obsidian-linter-link-format-conversion.json",
+      "media_type": "application/json",
+      "byte_size": 12009,
+      "sha256": "24c4ea171797f7e932b1088a9a8a02460c5340e192f903e2632e81783b877092"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "obsidian-linter-scoped-ignore-markers",
+      "object_path": "datasets/v1/deepswe-v1.1/obsidian-linter-scoped-ignore-markers.json",
+      "media_type": "application/json",
+      "byte_size": 11775,
+      "sha256": "bbc439d18b0b66ea603f422afa188c8234999e8c029a8b727ff4edb83153e588"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "ofetch-per-origin-circuit-breaker",
+      "object_path": "datasets/v1/deepswe-v1.1/ofetch-per-origin-circuit-breaker.json",
+      "media_type": "application/json",
+      "byte_size": 11990,
+      "sha256": "8244b7d927364ad7cd77fc1b8b39f07d0632b3e6c593184f62198b551449672b"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "onedump-dump-encryption-pipeline",
+      "object_path": "datasets/v1/deepswe-v1.1/onedump-dump-encryption-pipeline.json",
+      "media_type": "application/json",
+      "byte_size": 11837,
+      "sha256": "0d5fa02152bcf0c8a1aa17ec5118eeda0c5d54bfadf61f6f158d8be473b8e647"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "opa-rego-rule-profiling",
+      "object_path": "datasets/v1/deepswe-v1.1/opa-rego-rule-profiling.json",
+      "media_type": "application/json",
+      "byte_size": 11605,
+      "sha256": "3a989feca8b414740d9f60a0ca26c5a56ffeac5eff824dc51f5a6f5ffbc8903b"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "opa-template-string-reconstruction",
+      "object_path": "datasets/v1/deepswe-v1.1/opa-template-string-reconstruction.json",
+      "media_type": "application/json",
+      "byte_size": 12016,
+      "sha256": "4ab8158ebb6dd94e4a1f15c0e71608e068b096a8f06922eae26247b0fdfa3a5c"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "optique-conditional-option-dependencies",
+      "object_path": "datasets/v1/deepswe-v1.1/optique-conditional-option-dependencies.json",
+      "media_type": "application/json",
+      "byte_size": 12077,
+      "sha256": "7b3c9e1421ae1f503cec825bd64b1d8eb3240643703becd08267abfcb72f1837"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "oxvg-structural-selector-preservation",
+      "object_path": "datasets/v1/deepswe-v1.1/oxvg-structural-selector-preservation.json",
+      "media_type": "application/json",
+      "byte_size": 11863,
+      "sha256": "f874df7ac55ebf3d50eded9170d0f2aab0bfbae15044ba84874286669204d874"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "participle-grammar-conflict-analysis",
+      "object_path": "datasets/v1/deepswe-v1.1/participle-grammar-conflict-analysis.json",
+      "media_type": "application/json",
+      "byte_size": 11957,
+      "sha256": "3a81788845000f6e5ad03ea34ffa9bead9d5f24a21fee4c1cbb90a7aab3653f5"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "pebble-durability-wait-apis",
+      "object_path": "datasets/v1/deepswe-v1.1/pebble-durability-wait-apis.json",
+      "media_type": "application/json",
+      "byte_size": 11886,
+      "sha256": "20a1b40dfcc00d78ddf789b6d46326a0c3b246e2e3f53b77263a5cb183deea95"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "pest-character-class-coalescing",
+      "object_path": "datasets/v1/deepswe-v1.1/pest-character-class-coalescing.json",
+      "media_type": "application/json",
+      "byte_size": 11715,
+      "sha256": "d88988908b7ffd041b1950739b541c969a3e12de2541176c7faf1c5178869d8c"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "prometheus-transactional-reload-status",
+      "object_path": "datasets/v1/deepswe-v1.1/prometheus-transactional-reload-status.json",
+      "media_type": "application/json",
+      "byte_size": 12256,
+      "sha256": "da76d42a0d337c22e64055cbfda0cfa5afb282043edfb25d1a5e60160df1b263"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "prometheus-typed-label-sorting",
+      "object_path": "datasets/v1/deepswe-v1.1/prometheus-typed-label-sorting.json",
+      "media_type": "application/json",
+      "byte_size": 11636,
+      "sha256": "13f7a7d7d448dc04b8f6ec159b55e813d228cb30045937390fbdd0c786815259"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "psd-tools-blend-range-api",
+      "object_path": "datasets/v1/deepswe-v1.1/psd-tools-blend-range-api.json",
+      "media_type": "application/json",
+      "byte_size": 11529,
+      "sha256": "ab89c99e624a212fdf2a8608248c70a04372c0ace72d2cc322f9c4072b641658"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "pwntools-tube-multiplexing",
+      "object_path": "datasets/v1/deepswe-v1.1/pwntools-tube-multiplexing.json",
+      "media_type": "application/json",
+      "byte_size": 12225,
+      "sha256": "f5486d7e90bc69a58050459b0862e34f825b4101db153ec40c8d5c8caa68f3db"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "python-statemachine-state-data-scoping",
+      "object_path": "datasets/v1/deepswe-v1.1/python-statemachine-state-data-scoping.json",
+      "media_type": "application/json",
+      "byte_size": 11603,
+      "sha256": "480da9111cd549a1e2ade7083383264e7f68d29f154088c374179d66b49e9d61"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "query-persist-restored-query-state",
+      "object_path": "datasets/v1/deepswe-v1.1/query-persist-restored-query-state.json",
+      "media_type": "application/json",
+      "byte_size": 12316,
+      "sha256": "d7c7edd48b2bb08b07347f60f6870f07641728d0c3abb9c14fa33352ab949523"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "quill-shared-toolbar-focus",
+      "object_path": "datasets/v1/deepswe-v1.1/quill-shared-toolbar-focus.json",
+      "media_type": "application/json",
+      "byte_size": 12135,
+      "sha256": "97060e8ec5874f9b3124bfc9393f761985c1a81e2766645eb08e99ac469f9e8a"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "returns-validated-error-accumulation",
+      "object_path": "datasets/v1/deepswe-v1.1/returns-validated-error-accumulation.json",
+      "media_type": "application/json",
+      "byte_size": 11758,
+      "sha256": "e54860a0433b9993fd7b486e261072b7f30f890b205c2b77af6ef84c650c1f84"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "scc-bounded-memory-spilling",
+      "object_path": "datasets/v1/deepswe-v1.1/scc-bounded-memory-spilling.json",
+      "media_type": "application/json",
+      "byte_size": 11988,
+      "sha256": "fd01d1fb5e74d3dbb61c4c50be2bbf717ae2d57edac7cc330c7cef3e4ec44ae6"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "scriggo-method-declarations",
+      "object_path": "datasets/v1/deepswe-v1.1/scriggo-method-declarations.json",
+      "media_type": "application/json",
+      "byte_size": 11909,
+      "sha256": "88bffb9a267f17cc528780da973c8c65fc37f1aae738b47ed74269690cdb4650"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "skrub-duration-encoding",
+      "object_path": "datasets/v1/deepswe-v1.1/skrub-duration-encoding.json",
+      "media_type": "application/json",
+      "byte_size": 11690,
+      "sha256": "b4ef2ae62d9601e9ae4664033c7b74a0fe17214e46ff9e9854186fb840464327"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "sql-formatter-bigquery-pipe-formatting",
+      "object_path": "datasets/v1/deepswe-v1.1/sql-formatter-bigquery-pipe-formatting.json",
+      "media_type": "application/json",
+      "byte_size": 12092,
+      "sha256": "c031e13c5886e498fcc5db24fa3829446e2b5a97c0b0dff27e0c83dae1945060"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "sqlfmt-create-table-ddl-formatting",
+      "object_path": "datasets/v1/deepswe-v1.1/sqlfmt-create-table-ddl-formatting.json",
+      "media_type": "application/json",
+      "byte_size": 12021,
+      "sha256": "eb768b6a52082bd9deb6638ce425740e86e96363b8d6f480e168e5a66f37a89d"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "sqlite-utils-safe-import-checkpoints",
+      "object_path": "datasets/v1/deepswe-v1.1/sqlite-utils-safe-import-checkpoints.json",
+      "media_type": "application/json",
+      "byte_size": 12000,
+      "sha256": "924986acfef844679b07f637358828b2e9d30a2ab071eb95f3106ba03cffc629"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "superjson-error-stack-serialization",
+      "object_path": "datasets/v1/deepswe-v1.1/superjson-error-stack-serialization.json",
+      "media_type": "application/json",
+      "byte_size": 11918,
+      "sha256": "0073deeb56a919dd3c6c9ee7f496aa751fd715ee16f3f11f34b973b7c3a7d6e3"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "task-task-graph-export",
+      "object_path": "datasets/v1/deepswe-v1.1/task-task-graph-export.json",
+      "media_type": "application/json",
+      "byte_size": 11698,
+      "sha256": "67e816472bc9b53db8c9fc81af2f427f749dca4d63f7759836f8798ca6ce2994"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "tengo-callable-instance-isolation",
+      "object_path": "datasets/v1/deepswe-v1.1/tengo-callable-instance-isolation.json",
+      "media_type": "application/json",
+      "byte_size": 12094,
+      "sha256": "53e802264601bdf81647888f73f0bb1f2d6ffdc2ec996bbd9a2a4789ed6eb51e"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "tengo-destructuring-bindings",
+      "object_path": "datasets/v1/deepswe-v1.1/tengo-destructuring-bindings.json",
+      "media_type": "application/json",
+      "byte_size": 11591,
+      "sha256": "7a9a6eaee6351ca0e890f7b8cbfeb81138dfc685a0ad683d93af6cb66f7d9a1c"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "termenv-preserve-ansi-resets",
+      "object_path": "datasets/v1/deepswe-v1.1/termenv-preserve-ansi-resets.json",
+      "media_type": "application/json",
+      "byte_size": 11469,
+      "sha256": "d44f17fd4a6187f31f2962e8d0d4f88f9b56850e220d9e395d9d5233545391c6"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "testem-bail-on-test-failure",
+      "object_path": "datasets/v1/deepswe-v1.1/testem-bail-on-test-failure.json",
+      "media_type": "application/json",
+      "byte_size": 11756,
+      "sha256": "33e7155315c67ec1f29214b767b9008e34c9fc42022bad94ce7802001b8c79dc"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "testem-per-launcher-reports",
+      "object_path": "datasets/v1/deepswe-v1.1/testem-per-launcher-reports.json",
+      "media_type": "application/json",
+      "byte_size": 11745,
+      "sha256": "aa65fc3ce998250f3f28e825733fd37e91e692d3913518632692ab0978869e79"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "textual-kitty-key-phases",
+      "object_path": "datasets/v1/deepswe-v1.1/textual-kitty-key-phases.json",
+      "media_type": "application/json",
+      "byte_size": 12113,
+      "sha256": "3b9d006f1b189d82998721ddc18258785f4ce266af15d1fdccb4a17dcc8dd886"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "textual-richlog-follow-state",
+      "object_path": "datasets/v1/deepswe-v1.1/textual-richlog-follow-state.json",
+      "media_type": "application/json",
+      "byte_size": 11687,
+      "sha256": "0dad87f9bddb7afdfec09fc0e263d58d46b28a038d3d06e8a126d260041350a7"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "tomlkit-toml-table-converters",
+      "object_path": "datasets/v1/deepswe-v1.1/tomlkit-toml-table-converters.json",
+      "media_type": "application/json",
+      "byte_size": 12469,
+      "sha256": "ae29ab493b160c21f3b8059403c5050477705e2e52c7d17aa86e6459e2d2361a"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "true-myth-iterable-collection-combinators",
+      "object_path": "datasets/v1/deepswe-v1.1/true-myth-iterable-collection-combinators.json",
+      "media_type": "application/json",
+      "byte_size": 11915,
+      "sha256": "6e80fc8a7ddbcd35bfa23c61b4128634dd9f0569d2a120040ce654c7a76d60bb"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "ts-pattern-match-each",
+      "object_path": "datasets/v1/deepswe-v1.1/ts-pattern-match-each.json",
+      "media_type": "application/json",
+      "byte_size": 12141,
+      "sha256": "9d331afe578c5b71133e37891c106b2ed68f7b84dbf8942fd0ce48f1d59784a7"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "updo-policy-alerting",
+      "object_path": "datasets/v1/deepswe-v1.1/updo-policy-alerting.json",
+      "media_type": "application/json",
+      "byte_size": 11979,
+      "sha256": "1622cb5f380adb794cc6c6fa2f4f929e10318eae70d243ae8803540ef533286b"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "valibot-recursive-schema-composition",
+      "object_path": "datasets/v1/deepswe-v1.1/valibot-recursive-schema-composition.json",
+      "media_type": "application/json",
+      "byte_size": 12397,
+      "sha256": "400d23b699e8e8896e15ebc9711c65aef5423e61c4fe7e5c2a864f7d52b460a6"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "vitest-duration-sharding",
+      "object_path": "datasets/v1/deepswe-v1.1/vitest-duration-sharding.json",
+      "media_type": "application/json",
+      "byte_size": 11724,
+      "sha256": "829839d63960d22cc26008dbb5369d402dddff734c41923b171d6e8ad29d2126"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "vulture-persistent-analysis-cache",
+      "object_path": "datasets/v1/deepswe-v1.1/vulture-persistent-analysis-cache.json",
+      "media_type": "application/json",
+      "byte_size": 11997,
+      "sha256": "0e0b01a5d6490792ce2dd4f3154d6bc62a5cfbfa06b260a93e1ce4287381486b"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "wasmi-trap-coredumps",
+      "object_path": "datasets/v1/deepswe-v1.1/wasmi-trap-coredumps.json",
+      "media_type": "application/json",
+      "byte_size": 11682,
+      "sha256": "b28b6ff54a20aa3132513d75f73c1224ef2bcb468fed6d24c9a5ab541548050e"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "wazero-multi-module-snapshots",
+      "object_path": "datasets/v1/deepswe-v1.1/wazero-multi-module-snapshots.json",
+      "media_type": "application/json",
+      "byte_size": 11899,
+      "sha256": "5e10cb7e9bb7904aa6269c2b92ac9cedaec3a0bd8f95c26b3a88a93855f8fb81"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "yaegi-go-embed-directives",
+      "object_path": "datasets/v1/deepswe-v1.1/yaegi-go-embed-directives.json",
+      "media_type": "application/json",
+      "byte_size": 11595,
+      "sha256": "22ce676ebfb45f5c9e5e6b3c684fe9c537e4130148c6c76e67f70949350ac5ca"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "yjs-map-conflict-detection",
+      "object_path": "datasets/v1/deepswe-v1.1/yjs-map-conflict-detection.json",
+      "media_type": "application/json",
+      "byte_size": 12047,
+      "sha256": "8d247bb7b5677a736f6f4787bd9a119207d9ca87bda9cc6a26152a23f7137faf"
+    },
+    {
+      "benchmark": "deepswe-v1.1",
+      "native_id": "ytt-jsonpath-query-api",
+      "object_path": "datasets/v1/deepswe-v1.1/ytt-jsonpath-query-api.json",
+      "media_type": "application/json",
+      "byte_size": 11703,
+      "sha256": "64030e811b65ce1c7b1e0e59655541f72c1d0b1521e8ec2ac0106182dc54abf3"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "adaptive-rejection-sampler",
+      "object_path": "datasets/v1/terminal-bench-2.1/adaptive-rejection-sampler.json",
+      "media_type": "application/json",
+      "byte_size": 13977,
+      "sha256": "8f16ce933b80d1b80602db1e6f596555af2200d00bee8ebb20e9594af5159014"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "bn-fit-modify",
+      "object_path": "datasets/v1/terminal-bench-2.1/bn-fit-modify.json",
+      "media_type": "application/json",
+      "byte_size": 14158,
+      "sha256": "daf975b0c49a483202bd9d776175a4c243a9fd525b80e5516f5a5d93211cd1fb"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "break-filter-js-from-html",
+      "object_path": "datasets/v1/terminal-bench-2.1/break-filter-js-from-html.json",
+      "media_type": "application/json",
+      "byte_size": 13743,
+      "sha256": "303353c3b854a396c06fd6633b16b3dc6e6b383858fe4061c54044096c927926"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "build-cython-ext",
+      "object_path": "datasets/v1/terminal-bench-2.1/build-cython-ext.json",
+      "media_type": "application/json",
+      "byte_size": 14104,
+      "sha256": "daa893b027ed3d9f4a2c9af999425358d75536c94605676f32f9e9675ba20e2d"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "build-pmars",
+      "object_path": "datasets/v1/terminal-bench-2.1/build-pmars.json",
+      "media_type": "application/json",
+      "byte_size": 13839,
+      "sha256": "8ba876f16aca04b40b2130cc2fdb64d5c9e3b091420c9de690571e10bd6c61d8"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "build-pov-ray",
+      "object_path": "datasets/v1/terminal-bench-2.1/build-pov-ray.json",
+      "media_type": "application/json",
+      "byte_size": 13984,
+      "sha256": "9036ffff6f56215d3306746ff6aed8e69c047b59c73d169d7872df1129b81b25"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "caffe-cifar-10",
+      "object_path": "datasets/v1/terminal-bench-2.1/caffe-cifar-10.json",
+      "media_type": "application/json",
+      "byte_size": 14075,
+      "sha256": "9c0cf6ed81a97cbb3e2e1c5040b6bf279cbd83df691bc2f0c99292c3e769be47"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "cancel-async-tasks",
+      "object_path": "datasets/v1/terminal-bench-2.1/cancel-async-tasks.json",
+      "media_type": "application/json",
+      "byte_size": 13836,
+      "sha256": "0bec328a1ec25a944633236482957ac4c24965fcf6d5e57a2e2f607a1aec5f7e"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "chess-best-move",
+      "object_path": "datasets/v1/terminal-bench-2.1/chess-best-move.json",
+      "media_type": "application/json",
+      "byte_size": 13722,
+      "sha256": "3a4caf5505255ea5afac36ad45c02855e30b12687f8e9977e97c54a591c5b2d8"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "circuit-fibsqrt",
+      "object_path": "datasets/v1/terminal-bench-2.1/circuit-fibsqrt.json",
+      "media_type": "application/json",
+      "byte_size": 13916,
+      "sha256": "5c7faa6ac845dc6c545d0397d1739d240be71adad48041bce8da2466ced32532"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "cobol-modernization",
+      "object_path": "datasets/v1/terminal-bench-2.1/cobol-modernization.json",
+      "media_type": "application/json",
+      "byte_size": 13870,
+      "sha256": "b700ff6dc5e45f44cc6a70a1c802b01fc50c45d0c601a44ec3c271036568f3e5"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "code-from-image",
+      "object_path": "datasets/v1/terminal-bench-2.1/code-from-image.json",
+      "media_type": "application/json",
+      "byte_size": 13862,
+      "sha256": "caf31ec2554621bc79c1df2d29ced91a1af3bbfb3c8071019214b7ca4cfd1f03"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "compile-compcert",
+      "object_path": "datasets/v1/terminal-bench-2.1/compile-compcert.json",
+      "media_type": "application/json",
+      "byte_size": 13772,
+      "sha256": "900387a76d18673231984e73de09644f3d787aee5d98ca892dc94f9bc18e9fdf"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "configure-git-webserver",
+      "object_path": "datasets/v1/terminal-bench-2.1/configure-git-webserver.json",
+      "media_type": "application/json",
+      "byte_size": 13830,
+      "sha256": "b7727612fe6104f66da025ce423abff74ad480f875b59322783d22ce2d12119a"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "constraints-scheduling",
+      "object_path": "datasets/v1/terminal-bench-2.1/constraints-scheduling.json",
+      "media_type": "application/json",
+      "byte_size": 14074,
+      "sha256": "60e95e95a99c5f9addb119152fbeb11bc9a1e7ae7c7e7e9c61204f0847412bf0"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "count-dataset-tokens",
+      "object_path": "datasets/v1/terminal-bench-2.1/count-dataset-tokens.json",
+      "media_type": "application/json",
+      "byte_size": 13861,
+      "sha256": "09d83a733e13f812f2418c2e6e630d32c7258d502dc11888cb0c9beba46956fe"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "crack-7z-hash",
+      "object_path": "datasets/v1/terminal-bench-2.1/crack-7z-hash.json",
+      "media_type": "application/json",
+      "byte_size": 13711,
+      "sha256": "51ab4c819f7dd5512877035de23a427642954c7b09aa2f7cd2d19956eea544eb"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "custom-memory-heap-crash",
+      "object_path": "datasets/v1/terminal-bench-2.1/custom-memory-heap-crash.json",
+      "media_type": "application/json",
+      "byte_size": 13824,
+      "sha256": "ba51dde563ea4e42d170076cfc738c62f1df5803a645aede480032154cb14d4b"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "db-wal-recovery",
+      "object_path": "datasets/v1/terminal-bench-2.1/db-wal-recovery.json",
+      "media_type": "application/json",
+      "byte_size": 13816,
+      "sha256": "0c57f199c173960c643d890335ac1c4eb73c4e5cd5aec9e55a2477ccf03d0a08"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "distribution-search",
+      "object_path": "datasets/v1/terminal-bench-2.1/distribution-search.json",
+      "media_type": "application/json",
+      "byte_size": 13976,
+      "sha256": "3671d821ab06de54f28eb92808bcff0f0aa8ba51a206e82df9a96384804c63c5"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "dna-assembly",
+      "object_path": "datasets/v1/terminal-bench-2.1/dna-assembly.json",
+      "media_type": "application/json",
+      "byte_size": 13945,
+      "sha256": "85cb2ea88261623ab310b183499b371db7e26d0a2c4439e1f21fae9ba8cae6c1"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "dna-insert",
+      "object_path": "datasets/v1/terminal-bench-2.1/dna-insert.json",
+      "media_type": "application/json",
+      "byte_size": 13918,
+      "sha256": "a8dd1e79fe7bb7ca6d4dbd3628e884eafac80a30a9639e9d80dba7a8917e15c5"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "extract-elf",
+      "object_path": "datasets/v1/terminal-bench-2.1/extract-elf.json",
+      "media_type": "application/json",
+      "byte_size": 14016,
+      "sha256": "d133e06a1e8701276214b2f84aedb1fc632c3e402ffb783c11bc6f75f4603bf4"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "extract-moves-from-video",
+      "object_path": "datasets/v1/terminal-bench-2.1/extract-moves-from-video.json",
+      "media_type": "application/json",
+      "byte_size": 13764,
+      "sha256": "26e940202af31854bfe7763d44ae7a7412e019913bb3ce2b1a4bb7074e8b1f75"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "feal-differential-cryptanalysis",
+      "object_path": "datasets/v1/terminal-bench-2.1/feal-differential-cryptanalysis.json",
+      "media_type": "application/json",
+      "byte_size": 13950,
+      "sha256": "ec27853b29c4fa0dbdadfcd185f059c3c3793d2f2faa1bf9a0a1684d691a091e"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "feal-linear-cryptanalysis",
+      "object_path": "datasets/v1/terminal-bench-2.1/feal-linear-cryptanalysis.json",
+      "media_type": "application/json",
+      "byte_size": 13870,
+      "sha256": "0ee0a8dc188b2c08d1509d14652908ac49b6d6339d1ba8c2b4b316084345d979"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "filter-js-from-html",
+      "object_path": "datasets/v1/terminal-bench-2.1/filter-js-from-html.json",
+      "media_type": "application/json",
+      "byte_size": 13973,
+      "sha256": "48141c6731caf4459fca0684a6b8006ae3899d75f23c24afdbf3385145bbd4b1"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "financial-document-processor",
+      "object_path": "datasets/v1/terminal-bench-2.1/financial-document-processor.json",
+      "media_type": "application/json",
+      "byte_size": 14061,
+      "sha256": "013c9f05234812b0614633042e0044e568136b263bf1e4dac48f367b09a8f759"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "fix-code-vulnerability",
+      "object_path": "datasets/v1/terminal-bench-2.1/fix-code-vulnerability.json",
+      "media_type": "application/json",
+      "byte_size": 14009,
+      "sha256": "41f403de3c2a213e7d45048e02a00fcde3dd701eabc0f3fd38b329fa9ed50191"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "fix-git",
+      "object_path": "datasets/v1/terminal-bench-2.1/fix-git.json",
+      "media_type": "application/json",
+      "byte_size": 13733,
+      "sha256": "8e0825fb12585c328d4e6b06f68894b9eb558131ef1972997d4abfa6de32f105"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "fix-ocaml-gc",
+      "object_path": "datasets/v1/terminal-bench-2.1/fix-ocaml-gc.json",
+      "media_type": "application/json",
+      "byte_size": 13818,
+      "sha256": "6988ec0f0c18655c278a4096de970244d9bdffb93e293078478d4b07a726d50c"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "gcode-to-text",
+      "object_path": "datasets/v1/terminal-bench-2.1/gcode-to-text.json",
+      "media_type": "application/json",
+      "byte_size": 13641,
+      "sha256": "033f830c5ba0cfa4e196c0bcc6437fc61db35c728ec63dac6a58178a3dd97391"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "git-leak-recovery",
+      "object_path": "datasets/v1/terminal-bench-2.1/git-leak-recovery.json",
+      "media_type": "application/json",
+      "byte_size": 13883,
+      "sha256": "1d9f01160cd162671ac4cfe6e223edb116c78dff4bca059beb42709e0a9e0588"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "git-multibranch",
+      "object_path": "datasets/v1/terminal-bench-2.1/git-multibranch.json",
+      "media_type": "application/json",
+      "byte_size": 14100,
+      "sha256": "4ab0d808069605168dc63e2195953aed8ecfb443a55f65b78bf38d1bb822d6c2"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "gpt2-codegolf",
+      "object_path": "datasets/v1/terminal-bench-2.1/gpt2-codegolf.json",
+      "media_type": "application/json",
+      "byte_size": 13994,
+      "sha256": "2c5a29358388286973f8b9d98205753186a762dff22b40ef447d7c57ba1979e5"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "headless-terminal",
+      "object_path": "datasets/v1/terminal-bench-2.1/headless-terminal.json",
+      "media_type": "application/json",
+      "byte_size": 13892,
+      "sha256": "3937fb153cd0e59147c709b20504f03fdfe80b4a7a29c4ad7398c918d613f935"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "hf-model-inference",
+      "object_path": "datasets/v1/terminal-bench-2.1/hf-model-inference.json",
+      "media_type": "application/json",
+      "byte_size": 13967,
+      "sha256": "f1639caa2d511fca34c30c27bf535e39ca74a2b75b5911278a970322f9270a82"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "install-windows-3.11",
+      "object_path": "datasets/v1/terminal-bench-2.1/install-windows-3.11.json",
+      "media_type": "application/json",
+      "byte_size": 14080,
+      "sha256": "62eafd2cd488dc8eacbfcec52f481192d5577d70eb812a96a4eb3f7fd8fd16b9"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "kv-store-grpc",
+      "object_path": "datasets/v1/terminal-bench-2.1/kv-store-grpc.json",
+      "media_type": "application/json",
+      "byte_size": 14029,
+      "sha256": "6644cdfba8d64e09601572621cc89155099eb08b4ed2c153c303901f4bde945c"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "large-scale-text-editing",
+      "object_path": "datasets/v1/terminal-bench-2.1/large-scale-text-editing.json",
+      "media_type": "application/json",
+      "byte_size": 13935,
+      "sha256": "9cfd0fabb2d716d39bd5a928887924b5629ccb441efc9482ddf166df4b024e42"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "largest-eigenval",
+      "object_path": "datasets/v1/terminal-bench-2.1/largest-eigenval.json",
+      "media_type": "application/json",
+      "byte_size": 13925,
+      "sha256": "73e1cbd09bf5c5a57eb238c50177d3afe7a2c81ee3afd8e81b9184e0d45eaa52"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "llm-inference-batching-scheduler",
+      "object_path": "datasets/v1/terminal-bench-2.1/llm-inference-batching-scheduler.json",
+      "media_type": "application/json",
+      "byte_size": 14292,
+      "sha256": "71e94ee32692d04eecdb15b18bce83a386b338cbd6e653cf607398103e988f90"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "log-summary-date-ranges",
+      "object_path": "datasets/v1/terminal-bench-2.1/log-summary-date-ranges.json",
+      "media_type": "application/json",
+      "byte_size": 13839,
+      "sha256": "bb880d9b882791cd980286e4767758fb4bd6149c059dedaf0f7627f6dde845a1"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "mailman",
+      "object_path": "datasets/v1/terminal-bench-2.1/mailman.json",
+      "media_type": "application/json",
+      "byte_size": 13973,
+      "sha256": "8f4ecd7384a22096b8d4cf907ae6d09ab44552389398119e6ea0290d68db8208"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "make-doom-for-mips",
+      "object_path": "datasets/v1/terminal-bench-2.1/make-doom-for-mips.json",
+      "media_type": "application/json",
+      "byte_size": 14029,
+      "sha256": "2e62df2092d2fd8b804fcc6c2aa4d3a5a9a8d7ad2e606ef09b4fe8b9fd9f105e"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "make-mips-interpreter",
+      "object_path": "datasets/v1/terminal-bench-2.1/make-mips-interpreter.json",
+      "media_type": "application/json",
+      "byte_size": 14032,
+      "sha256": "937aa115e7f2fda0025ad80185cd785c224d4bb7a875bbaf7b813ce0f0aef6f6"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "mcmc-sampling-stan",
+      "object_path": "datasets/v1/terminal-bench-2.1/mcmc-sampling-stan.json",
+      "media_type": "application/json",
+      "byte_size": 14165,
+      "sha256": "17a763fd4b37aea4e8f0670e8be15103ad7f6aa340dcb2cd70a1f99c4d3b57ff"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "merge-diff-arc-agi-task",
+      "object_path": "datasets/v1/terminal-bench-2.1/merge-diff-arc-agi-task.json",
+      "media_type": "application/json",
+      "byte_size": 13978,
+      "sha256": "4669f1f1a5403cdc34bfb7ab5e114dbf0030ee651f7f4c0ddae884d2b3892a90"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "model-extraction-relu-logits",
+      "object_path": "datasets/v1/terminal-bench-2.1/model-extraction-relu-logits.json",
+      "media_type": "application/json",
+      "byte_size": 13958,
+      "sha256": "862582633f04fe5084ebbea44b1d74f339cd04d4d5de0b0b378e30d545bdada8"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "modernize-scientific-stack",
+      "object_path": "datasets/v1/terminal-bench-2.1/modernize-scientific-stack.json",
+      "media_type": "application/json",
+      "byte_size": 14267,
+      "sha256": "e40799dc3c3583bb0c0b9fe0b0fde9ba1a6d9ea91096a84da91141cdd5bc9065"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "mteb-leaderboard",
+      "object_path": "datasets/v1/terminal-bench-2.1/mteb-leaderboard.json",
+      "media_type": "application/json",
+      "byte_size": 13823,
+      "sha256": "d29898d8511a79630423ef73c743f63cbfea6b62ee4c074951faa6753cfa13f7"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "mteb-retrieve",
+      "object_path": "datasets/v1/terminal-bench-2.1/mteb-retrieve.json",
+      "media_type": "application/json",
+      "byte_size": 13926,
+      "sha256": "0c8c3f5b662f8bd38d9daaa9539a63faf7311098d0feedab4131882a44dddef1"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "multi-source-data-merger",
+      "object_path": "datasets/v1/terminal-bench-2.1/multi-source-data-merger.json",
+      "media_type": "application/json",
+      "byte_size": 14133,
+      "sha256": "a96fb2a2c3da133d8cc0d4ec0377f09c00a69923b6f094754ccab5bf6d9f3013"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "nginx-request-logging",
+      "object_path": "datasets/v1/terminal-bench-2.1/nginx-request-logging.json",
+      "media_type": "application/json",
+      "byte_size": 14141,
+      "sha256": "ab480ed7f7e4a50b22f84f0024c1635b12d71ff80290d4f41380f8cf227b60c5"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "openssl-selfsigned-cert",
+      "object_path": "datasets/v1/terminal-bench-2.1/openssl-selfsigned-cert.json",
+      "media_type": "application/json",
+      "byte_size": 14144,
+      "sha256": "5f551554ef54182e0af5dc15b2840076ca49d252027a9237ded4fd551205961a"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "overfull-hbox",
+      "object_path": "datasets/v1/terminal-bench-2.1/overfull-hbox.json",
+      "media_type": "application/json",
+      "byte_size": 13883,
+      "sha256": "dbc64d10eaa777e6bb860b0016d94fa5a21329329f55ed9a987475d2e949998f"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "password-recovery",
+      "object_path": "datasets/v1/terminal-bench-2.1/password-recovery.json",
+      "media_type": "application/json",
+      "byte_size": 13959,
+      "sha256": "7b6d67273b268720cbe3133789f89e546a1e5de33c8d09d26e13f064039cdde8"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "path-tracing",
+      "object_path": "datasets/v1/terminal-bench-2.1/path-tracing.json",
+      "media_type": "application/json",
+      "byte_size": 13942,
+      "sha256": "77a8bc5e200f2b00044b8185a79112da5e50b80489b91c411ffbb459a73bf420"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "path-tracing-reverse",
+      "object_path": "datasets/v1/terminal-bench-2.1/path-tracing-reverse.json",
+      "media_type": "application/json",
+      "byte_size": 13913,
+      "sha256": "f27c5a96ab94347c30d2b1152654262bec7116f2eb0446d4fc5a5bc6afcd6f18"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "polyglot-c-py",
+      "object_path": "datasets/v1/terminal-bench-2.1/polyglot-c-py.json",
+      "media_type": "application/json",
+      "byte_size": 13928,
+      "sha256": "d654ef928164f006d62afeb4bca42dbbb4d962b2cabbaac9f557def33eae86fa"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "polyglot-rust-c",
+      "object_path": "datasets/v1/terminal-bench-2.1/polyglot-rust-c.json",
+      "media_type": "application/json",
+      "byte_size": 13868,
+      "sha256": "895362c6fdc7cb331631a61a4626259c984c173af2803cf90adecdf1eb487706"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "portfolio-optimization",
+      "object_path": "datasets/v1/terminal-bench-2.1/portfolio-optimization.json",
+      "media_type": "application/json",
+      "byte_size": 14008,
+      "sha256": "4029b03442e1e192af96572d3d9784f2ce54f728b397c04b3f17ea7eef2ec5f5"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "protein-assembly",
+      "object_path": "datasets/v1/terminal-bench-2.1/protein-assembly.json",
+      "media_type": "application/json",
+      "byte_size": 14277,
+      "sha256": "cc36f2f4f4a5f250a42b5421cfaffa60aab27cb70bcae1d654aadc141d91a5d8"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "prove-plus-comm",
+      "object_path": "datasets/v1/terminal-bench-2.1/prove-plus-comm.json",
+      "media_type": "application/json",
+      "byte_size": 13668,
+      "sha256": "ffe43f056f473bd891fd5b224f4527d3984739c9ab3225c4bcd301dc19cddeb1"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "pypi-server",
+      "object_path": "datasets/v1/terminal-bench-2.1/pypi-server.json",
+      "media_type": "application/json",
+      "byte_size": 13936,
+      "sha256": "7ef752dd7cc4a1c7913a87720ed9508672417ff8202e1d27c5e7e0ded8662d51"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "pytorch-model-cli",
+      "object_path": "datasets/v1/terminal-bench-2.1/pytorch-model-cli.json",
+      "media_type": "application/json",
+      "byte_size": 13976,
+      "sha256": "0f4bb0146156beb035ca3c26680bbb00a45d173fc735581f3efcd58be19a1dec"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "pytorch-model-recovery",
+      "object_path": "datasets/v1/terminal-bench-2.1/pytorch-model-recovery.json",
+      "media_type": "application/json",
+      "byte_size": 14065,
+      "sha256": "c9d7684bb80454542c2301806421f2724e8de6cc45b99101e2ee19afd0afa7c8"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "qemu-alpine-ssh",
+      "object_path": "datasets/v1/terminal-bench-2.1/qemu-alpine-ssh.json",
+      "media_type": "application/json",
+      "byte_size": 13922,
+      "sha256": "25f20edc56719fe30e7ff99cf95a0bb76295f90adc62277ecb76f97dc9ab8da1"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "qemu-startup",
+      "object_path": "datasets/v1/terminal-bench-2.1/qemu-startup.json",
+      "media_type": "application/json",
+      "byte_size": 13831,
+      "sha256": "d539f57385cc243161d643a11906b144c458a7993e1c89653b65a761fd7815ea"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "query-optimize",
+      "object_path": "datasets/v1/terminal-bench-2.1/query-optimize.json",
+      "media_type": "application/json",
+      "byte_size": 13848,
+      "sha256": "ec04e985dd60716526ebabdc24b7bfda6029ebc6fe6c84f94e28adecb023ce35"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "raman-fitting",
+      "object_path": "datasets/v1/terminal-bench-2.1/raman-fitting.json",
+      "media_type": "application/json",
+      "byte_size": 13797,
+      "sha256": "953dbb2070ef6cf0e9f70749e1f1d13573c64c1ac18fa70a365cfc29f77556ac"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "regex-chess",
+      "object_path": "datasets/v1/terminal-bench-2.1/regex-chess.json",
+      "media_type": "application/json",
+      "byte_size": 13937,
+      "sha256": "e7eda83904703ad3bbbb8b548ca3ab28032e450f71ec9e45342a8426fe4cd95e"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "regex-log",
+      "object_path": "datasets/v1/terminal-bench-2.1/regex-log.json",
+      "media_type": "application/json",
+      "byte_size": 14046,
+      "sha256": "30a10b40a89b62430df0135706ce960566c5596b6eaa2f286f0169e6a2ac5ba7"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "reshard-c4-data",
+      "object_path": "datasets/v1/terminal-bench-2.1/reshard-c4-data.json",
+      "media_type": "application/json",
+      "byte_size": 14182,
+      "sha256": "8ba38d7643f1d696910579b1070df8e846a5a7bcebc683b84e7fe8b1502c4bca"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "rstan-to-pystan",
+      "object_path": "datasets/v1/terminal-bench-2.1/rstan-to-pystan.json",
+      "media_type": "application/json",
+      "byte_size": 14224,
+      "sha256": "3aa5199f5195cfcb32e19dd7f517c271b88341b5e3227b8fe60bbfde0535b501"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "sam-cell-seg",
+      "object_path": "datasets/v1/terminal-bench-2.1/sam-cell-seg.json",
+      "media_type": "application/json",
+      "byte_size": 14235,
+      "sha256": "5dc33ceb5016fe9692e475f93b8330282d07a972f354bddc4c25d12eec2ba54a"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "sanitize-git-repo",
+      "object_path": "datasets/v1/terminal-bench-2.1/sanitize-git-repo.json",
+      "media_type": "application/json",
+      "byte_size": 13916,
+      "sha256": "0374dcfa41b29fa7216e53db7045286beb47c2a780f223d95074c6be4a2ea95e"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "schemelike-metacircular-eval",
+      "object_path": "datasets/v1/terminal-bench-2.1/schemelike-metacircular-eval.json",
+      "media_type": "application/json",
+      "byte_size": 14070,
+      "sha256": "3aa9e97e7f95a0a555c9649bd0790d0b050e7e21c7c3a7a47cbde9ce69c9d958"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "sparql-university",
+      "object_path": "datasets/v1/terminal-bench-2.1/sparql-university.json",
+      "media_type": "application/json",
+      "byte_size": 13962,
+      "sha256": "53b735299a80b58001364a957d38a3c0f856c3cd38d60234665a63e14d7142f0"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "sqlite-db-truncate",
+      "object_path": "datasets/v1/terminal-bench-2.1/sqlite-db-truncate.json",
+      "media_type": "application/json",
+      "byte_size": 13769,
+      "sha256": "078b8feae241405290d52ac82dec98d9f60f12c6a280c46704538784457e8dd2"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "sqlite-with-gcov",
+      "object_path": "datasets/v1/terminal-bench-2.1/sqlite-with-gcov.json",
+      "media_type": "application/json",
+      "byte_size": 13945,
+      "sha256": "d9a8fab7a34d7e22c11b8dfdb6a40d6212aab8b608f1fa1af9f24cf0623f0df4"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "torch-pipeline-parallelism",
+      "object_path": "datasets/v1/terminal-bench-2.1/torch-pipeline-parallelism.json",
+      "media_type": "application/json",
+      "byte_size": 14147,
+      "sha256": "4ab3eca7c41c448581df028afe4d47104bdf677d2b44172e633e0e46889500b4"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "torch-tensor-parallelism",
+      "object_path": "datasets/v1/terminal-bench-2.1/torch-tensor-parallelism.json",
+      "media_type": "application/json",
+      "byte_size": 14184,
+      "sha256": "4ab7261b0e8cb1fa5c2c4c37fa028bbb672ffd4365bbffabc872cb484f5f31c4"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "train-fasttext",
+      "object_path": "datasets/v1/terminal-bench-2.1/train-fasttext.json",
+      "media_type": "application/json",
+      "byte_size": 13800,
+      "sha256": "144c84df67766a207d0d397741a63611a8b783fe74f8d5777a2109f28949baea"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "tune-mjcf",
+      "object_path": "datasets/v1/terminal-bench-2.1/tune-mjcf.json",
+      "media_type": "application/json",
+      "byte_size": 13996,
+      "sha256": "760bda7e3d64d567c096220a6e8fa8e3c7095cb2644fd4108d42427e5aef53eb"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "video-processing",
+      "object_path": "datasets/v1/terminal-bench-2.1/video-processing.json",
+      "media_type": "application/json",
+      "byte_size": 14009,
+      "sha256": "38261e4e17002b77e235ff486af08a2e9bb83f56bdff9265185588730a2e4698"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "vulnerable-secret",
+      "object_path": "datasets/v1/terminal-bench-2.1/vulnerable-secret.json",
+      "media_type": "application/json",
+      "byte_size": 13774,
+      "sha256": "5b75331112ef01508e5f40319019d028119e0b46642ee15278bd8db22b1e324e"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "winning-avg-corewars",
+      "object_path": "datasets/v1/terminal-bench-2.1/winning-avg-corewars.json",
+      "media_type": "application/json",
+      "byte_size": 13945,
+      "sha256": "f4ad77d1948733cc062278736779d2a1e3b11c6782d3fa1eb98169fd288eb6aa"
+    },
+    {
+      "benchmark": "terminal-bench-2.1",
+      "native_id": "write-compressor",
+      "object_path": "datasets/v1/terminal-bench-2.1/write-compressor.json",
+      "media_type": "application/json",
+      "byte_size": 13871,
+      "sha256": "2b8b7ad68d25042d28bc723a17f791c157bb2cba7c0ded4b59b7aefdfde84be3"
     }
   ],
   "validation": {
     "passed": true,
     "validation_version": "1",
-    "checked_at": "2026-07-13T08:32:32.039Z",
+    "checked_at": "2026-07-13T09:16:17.779Z",
     "terminal_evidence": {
       "jobs": 13,
       "resolved_trial_references": 8902

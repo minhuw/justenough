@@ -35,7 +35,7 @@ test("server-renders the evidence explorer and sample cases", async () => {
   assert.match(html, /Cases, minus the archaeology/);
   assert.match(html, /id="case-results">10<!-- --> <!-- -->cases/);
   assert.match(html, /Add bail-on-test-failure handling to Testem/);
-  assert.match(html, /Boot Alpine in QEMU and expose SSH/);
+  assert.match(html, /Boot Alpine in QEMU with SSH access/);
   assert.match(html, /Published trials/);
   assert.match(html, /1320/);
   assert.match(html, /Any benchmark/);
@@ -54,8 +54,8 @@ test("server-renders a shareable evidence case with outcomes and provenance", as
   assert.equal(response.status, 200);
 
   const html = await response.text();
-  assert.match(html, /Find and fix a CRLF header injection vulnerability/);
-  assert.match(html, /reject carriage return, line feed, and null header input/);
+  assert.match(html, /Fix CRLF injection in Bottle headers/);
+  assert.match(html, /Reject carriage-return and line-feed input/);
   assert.match(html, /gpt-5\.6-luna/);
   assert.match(html, /grok-4\.5/);
   assert.match(html, /Configurations[\s\S]*?20/);
@@ -77,9 +77,9 @@ test("server-renders the full DeepSWE model set", async () => {
   const html = await response.text();
   assert.match(html, /Configurations[\s\S]*?41/);
   assert.match(html, /claude-fable-5/);
-  assert.match(html, /gemini-3\.5-flash/);
-  assert.match(html, /glm-5\.2/);
-  assert.match(html, /kimi-k2\.7-code/);
+  assert.match(html, /gemini-3-5-flash/);
+  assert.match(html, /glm-5-2/);
+  assert.match(html, /kimi-k2-7-code/);
 });
 
 test("bundles the JSONL normalization sample without enabling persistence", async () => {
@@ -130,6 +130,15 @@ test("normalization fixtures contain every published configuration for ten cases
 
   assert.equal(records.length, 10);
   assert.equal(new Set(identities).size, 10);
+  assert.ok(records.every((record) => record.schema_version === "1"));
+  assert.ok(
+    records.every(
+      (record) =>
+        record.profile.description.startsWith(record.profile.summary) &&
+        record.profile.difficulty_factors.length > 0 &&
+        !("requirements" in record.profile),
+    ),
+  );
   assert.ok(deepSweRecords.every((record) => record.outcomes.panel.length === 41));
   assert.ok(
     terminalBenchRecords.every((record) => record.outcomes.panel.length === 20),

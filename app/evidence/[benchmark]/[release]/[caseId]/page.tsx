@@ -1,7 +1,6 @@
 import {
   ArrowLeft,
   ArrowUpRight,
-  Check,
   ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
@@ -80,6 +79,9 @@ export default async function EvidenceCasePage({
                 <h2 className="mt-2 text-2xl font-semibold tracking-[-0.025em]" id="task-shape">
                   What this task asks for
                 </h2>
+                <p className="mt-5 max-w-3xl text-sm leading-7 text-muted-foreground">
+                  {item.profile.description}
+                </p>
                 <div className="mt-6 grid gap-8 sm:grid-cols-2">
                   <div>
                     <h3 className="section-label">Intent</h3>
@@ -124,12 +126,11 @@ export default async function EvidenceCasePage({
                 </div>
 
                 <div className="mt-10 border-l-2 border-enough pl-5">
-                  <h3 className="section-label">Distinguishing requirements</h3>
+                  <h3 className="section-label">What makes it difficult</h3>
                   <ul className="mt-4 space-y-3">
-                    {item.profile.requirements.map((requirement) => (
-                      <li className="flex gap-3 text-sm leading-6" key={requirement}>
-                        <Check aria-hidden="true" className="mt-1 size-4 shrink-0 text-positive" />
-                        <span>{requirement}</span>
+                    {item.profile.difficulty_factors.map((factor) => (
+                      <li className="text-sm leading-6" key={factor}>
+                        {factor}
                       </li>
                     ))}
                   </ul>

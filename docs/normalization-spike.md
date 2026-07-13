@@ -2,6 +2,10 @@
 
 Date: 2026-07-13
 
+Status: superseded by schema v1 in `docs/extraction-guide.md`. The current
+profile uses a source-grounded description and normalized difficulty factors
+instead of a separate requirements checklist.
+
 ## Result
 
 The compact abstraction works for both DeepSWE v1.1 and Terminal-Bench 2.1.

@@ -2,6 +2,11 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 
+import {
+  buildDescription,
+  deriveDifficultyFactors,
+} from "./profile-template.mjs";
+
 const SOURCE_REVISION = "6db64a40f3318d8659238ff34a8cc4b491c49205";
 const SOURCE_REPOSITORY = "https://github.com/datacurve-ai/deep-swe";
 const TRIALS_ARTIFACT_URL =
@@ -118,7 +123,7 @@ const languageNames = {
 
 // Semantic overrides for instructions whose formatting produces incomplete
 // clauses when treated as independent Markdown bullets or sentences.
-const requirementOverrides = {
+const demandOverrides = {
   "actionlint-action-pinning-lint": [
     "Check action and reusable-workflow `uses:` references with the `action-pinning` lint rule",
     "Support `major-minor`, `semver`, and `commit-sha` levels, defaulting to `semver`",
@@ -490,7 +495,7 @@ function deriveSurfaces(text) {
     : ["library API"];
 }
 
-function cleanRequirement(value) {
+function cleanDemandClause(value) {
   return value
     .replace(/^#{1,6}\s+/, "")
     .replace(/^[-*+]\s+/, "")
@@ -501,8 +506,8 @@ function cleanRequirement(value) {
     .trim();
 }
 
-function deriveRequirements(instruction, taskId) {
-  if (requirementOverrides[taskId]) return requirementOverrides[taskId];
+function deriveDemandClauses(instruction, taskId) {
+  if (demandOverrides[taskId]) return demandOverrides[taskId];
 
   const clean = instruction.replace(
     /\s*IMPORTANT:\s*Please work on this[\s\S]*$/i,
@@ -522,7 +527,7 @@ function deriveRequirements(instruction, taskId) {
           .split(/\s+--\s+|;\s+/)
           .flatMap((part) => part.split(/(?<=[.!?])\s+(?=[A-Z`])/));
     for (const piece of pieces) {
-      const value = cleanRequirement(piece);
+      const value = cleanDemandClause(piece);
       if (value.length < 18 || value.length > 280) continue;
       if (/^(background|expected behavior|expected outcomes|constraints|acceptance criteria)$/i.test(value)) {
         continue;
@@ -558,7 +563,7 @@ function deriveRequirements(instruction, taskId) {
   selected.sort((a, b) => a.index - b.index);
 
   if (selected.length < 2) {
-    fail(`${taskId}: could not derive at least two distinguishing requirements`);
+    fail(`${taskId}: could not derive at least two demand clauses`);
   }
   return selected.map(({ value }) => value);
 }
@@ -652,13 +657,14 @@ function validate(records, taskIds) {
     for (const field of [
       "title",
       "summary",
+      "description",
       "interaction",
       "intents",
       "technologies",
       "languages",
       "work_surfaces",
       "expected_artifacts",
-      "requirements",
+      "difficulty_factors",
     ]) {
       const value = profile[field];
       if (!value || (Array.isArray(value) && value.length === 0)) {
@@ -778,9 +784,13 @@ const records = taskIds.map((id) => {
     ["-C", repoDir, "rev-parse", `${SOURCE_REVISION}:tasks/${id}`],
     { encoding: "utf8" },
   ).trim();
+  const demandClauses = deriveDemandClauses(instruction, id);
+  const technologies = deriveTechnologies(taskRow.repository, semanticText);
+  const languages = [languageNames[language] ?? language];
+  const workSurfaces = deriveSurfaces(semanticText);
 
   return {
-    schema_version: "0.2",
+    schema_version: "1",
     identity: {
       benchmark: "deepswe",
       release: "v1.1",
@@ -797,13 +807,20 @@ const records = taskIds.map((id) => {
     profile: {
       title: displayTitle,
       summary: displayDescription,
+      description: buildDescription(displayDescription, demandClauses),
       interaction: "repository",
       intents: deriveIntents(semanticText, category),
-      technologies: deriveTechnologies(taskRow.repository, semanticText),
-      languages: [languageNames[language] ?? language],
-      work_surfaces: deriveSurfaces(semanticText),
+      technologies,
+      languages,
+      work_surfaces: workSurfaces,
       expected_artifacts: ["repository patch"],
-      requirements: deriveRequirements(instruction, id),
+      difficulty_factors: deriveDifficultyFactors({
+        summary: displayDescription,
+        demandClauses,
+        technologies,
+        languages,
+        workSurfaces,
+      }),
       observed_labels: {
         category,
         language,
@@ -817,7 +834,7 @@ const records = taskIds.map((id) => {
     },
     extraction: {
       method: "frontier LLM semantic extraction with pinned-source review",
-      version: "full-1",
+      version: "full-2",
       date: extractionDate,
       observed_fields: [
         "identity",
@@ -834,12 +851,13 @@ const records = taskIds.map((id) => {
         "outcomes",
       ],
       derived_fields: [
+        "profile.description",
         "profile.interaction",
         "profile.intents",
         "profile.technologies",
         "profile.work_surfaces",
         "profile.expected_artifacts",
-        "profile.requirements",
+        "profile.difficulty_factors",
       ],
       omitted: [
         "instruction text",

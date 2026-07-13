@@ -39,13 +39,14 @@ export type EvidenceCase = {
   profile: {
     title: string;
     summary: string;
+    description: string;
     interaction: string;
     intents: string[];
     technologies: string[];
     languages: string[];
     work_surfaces: string[];
     expected_artifacts: string[];
-    requirements: string[];
+    difficulty_factors: string[];
     observed_labels: Record<string, string>;
   };
   outcomes: {
@@ -53,12 +54,6 @@ export type EvidenceCase = {
     published_configurations?: number;
     published_trials?: number;
     panel: Outcome[];
-  };
-  sample: {
-    method: string;
-    seed: string;
-    population: number;
-    rank: string;
   };
   extraction: {
     method: string;

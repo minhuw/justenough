@@ -50,13 +50,14 @@ export function EvidenceBrowser({ cases }: { cases: EvidenceCase[] }) {
       const searchable = [
         item.profile.title,
         item.profile.summary,
+        item.profile.description,
         item.identity.native_id,
         ...item.profile.intents,
         ...item.profile.technologies,
         ...item.profile.languages,
         ...item.profile.work_surfaces,
         ...item.profile.expected_artifacts,
-        ...item.profile.requirements,
+        ...item.profile.difficulty_factors,
         ...Object.values(item.profile.observed_labels),
       ]
         .join(" ")
@@ -90,8 +91,8 @@ export function EvidenceBrowser({ cases }: { cases: EvidenceCase[] }) {
               Cases, minus the archaeology.
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-              Search compact task profiles, inspect the requirements that distinguish them,
-              and compare published model outcomes without reading trajectories or verifier code.
+              Search compact task profiles, see what makes them difficult, and compare
+              published model outcomes.
             </p>
           </div>
           <dl className="grid grid-cols-3 border-y border-border py-4 lg:grid-cols-1 lg:gap-4 lg:border-y-0 lg:border-l lg:py-0 lg:pl-8">
@@ -125,7 +126,7 @@ export function EvidenceBrowser({ cases }: { cases: EvidenceCase[] }) {
               <input
                 className="h-11 w-full rounded-sm border border-input bg-background pl-10 pr-3 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-foreground focus-visible:ring-2 focus-visible:ring-ring"
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search tasks, stacks, requirements…"
+                placeholder="Search tasks, stacks, difficulty factors…"
                 type="search"
                 value={query}
               />
