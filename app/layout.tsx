@@ -11,24 +11,24 @@ export async function generateMetadata(): Promise<Metadata> {
   const protocol =
     requestHeaders.get("x-forwarded-proto") ??
     (host.startsWith("localhost") ? "http" : "https");
-  const socialImage = new URL("/og.png", `${protocol}://${host}`).toString();
+  const socialImage = new URL("/og-routing.png", `${protocol}://${host}`).toString();
 
   return {
-    title: "JustEnough — evidence browser",
-    description: "Browse normalized benchmark cases and published model outcomes.",
+    title: "JustEnough — evidence-backed model routing",
+    description: "Find a model and reasoning effort supported by similar benchmark tasks.",
     icons: {
       icon: "/favicon.svg",
       shortcut: "/favicon.svg",
     },
     openGraph: {
-      title: "JustEnough — evidence browser",
-      description: "Cases, minus the archaeology.",
+      title: "JustEnough — evidence-backed model routing",
+      description: "The right model. The right effort. Evidence included.",
       images: [{ url: socialImage, width: 1200, height: 630 }],
     },
     twitter: {
       card: "summary_large_image",
-      title: "JustEnough — evidence browser",
-      description: "Cases, minus the archaeology.",
+      title: "JustEnough — evidence-backed model routing",
+      description: "The right model. The right effort. Evidence included.",
       images: [socialImage],
     },
   };

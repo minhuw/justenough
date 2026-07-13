@@ -4,14 +4,15 @@ import test from "node:test";
 
 const projectRoot = new URL("../", import.meta.url);
 
-async function render(pathname = "/", bindings = {}) {
+async function fetchWorker(pathname = "/", init = {}, bindings = {}) {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
     new Request(`http://localhost${pathname}`, {
-      headers: { accept: "text/html" },
+      ...init,
+      headers: { accept: "text/html", ...init.headers },
     }),
     {
       ASSETS: {
@@ -26,13 +27,28 @@ async function render(pathname = "/", bindings = {}) {
   );
 }
 
-test("server-renders the full evidence explorer", async () => {
+async function render(pathname = "/", bindings = {}) {
+  return fetchWorker(pathname, {}, bindings);
+}
+
+test("server-renders the task router", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>JustEnough — evidence browser<\/title>/i);
+  assert.match(html, /<title>JustEnough — evidence-backed model routing<\/title>/i);
+  assert.match(html, /No smarter than necessary/);
+  assert.match(html, /What should the agent accomplish/);
+  assert.match(html, /Reliability target/);
+  assert.match(html, /Find just enough/);
+});
+
+test("server-renders the full evidence explorer", async () => {
+  const response = await render("/evidence");
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
   assert.match(html, /Cases, minus the archaeology/);
   assert.match(html, /id="case-results">202<!-- --> <!-- -->cases/);
   assert.match(html, /Add bail-on-test-failure handling to Testem/);
@@ -46,6 +62,64 @@ test("server-renders the full evidence explorer", async () => {
     /Rates summarize every published configuration|10-case normalization sample|sample v2026\.07/,
   );
   assert.doesNotMatch(html, /illustrative data|Candidate frontier|react-loading-skeleton/i);
+});
+
+test("retrieves specific evidence and abstains when transfer coverage is sparse", async () => {
+  const response = await fetchWorker("/api/route", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      task: "In a terminal environment, fix CRLF injection in Bottle HTTP response headers and validate the security behavior.",
+      reliabilityTarget: 0.7,
+    }),
+  });
+
+  assert.equal(response.status, 200);
+  const result = await response.json();
+  assert.equal(result.profile.interaction, "terminal");
+  assert.equal(result.reliabilityTarget, 0.7);
+  assert.equal(result.objective, "reasoning_effort_proxy");
+  assert.deepEqual(result.analysis.retrieval, ["lexical", "facets"]);
+  assert.ok(result.matches.length >= 3);
+  assert.ok(
+    result.matches.some(
+      (match) => match.identity.native_id === "fix-code-vulnerability",
+    ),
+  );
+  assert.ok(result.matches.every((match) => match.href.startsWith("/evidence/")));
+  assert.equal(result.status, "abstained");
+  assert.ok(result.abstentionReasons.some((reason) => reason.includes("task similarity")));
+  assert.ok(result.warnings.some((warning) => warning.includes("LLM profiling is disabled")));
+});
+
+test("recommends an exact configuration only when the evidence gate clears", async () => {
+  const response = await fetchWorker("/api/route", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      task: "In a repository, implement a new Python CLI feature, update configuration handling, and add regression tests.",
+      reliabilityTarget: 0.7,
+    }),
+  });
+
+  assert.equal(response.status, 200);
+  const result = await response.json();
+  assert.equal(result.profile.interaction, "repository");
+  assert.equal(result.status, "recommended");
+  assert.ok(result.recommendation.lowerBound >= result.reliabilityTarget);
+  assert.ok(result.recommendation.supportingCases >= 3);
+  assert.ok(result.matches.filter((match) => match.score >= 0.25).length >= 3);
+});
+
+test("rejects malformed routing requests", async () => {
+  const response = await fetchWorker("/api/route", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ task: "too short", reliabilityTarget: 0.8 }),
+  });
+
+  assert.equal(response.status, 400);
+  assert.match((await response.json()).error, /between 12 and 5,000/);
 });
 
 test("server-renders a shareable evidence case with outcomes and provenance", async () => {

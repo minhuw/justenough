@@ -15,6 +15,10 @@ const evidenceCases = [
   ...parseJsonl(terminalBenchRaw),
 ];
 
+export function listEvidenceCases() {
+  return evidenceCases;
+}
+
 export function findEvidenceCase(
   benchmark: string,
   release: string,

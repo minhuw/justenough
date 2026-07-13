@@ -1,6 +1,26 @@
 # JustEnough
 
-JustEnough indexes coding benchmark tasks and their published model outcomes.
+JustEnough indexes coding benchmark tasks and their published model outcomes,
+then retrieves comparable cases to find an execution configuration with enough
+evidence for a described task.
+
+The route at `POST /api/route` runs without credentials using structured
+heuristics, lexical retrieval, and case facets. It uses a conservative 90%
+one-sided Wilson lower bound and abstains when similarity, coverage, repeated
+trials, or the requested reliability target are insufficient.
+
+## LLM and semantic retrieval
+
+For production task profiling, semantic retrieval, and LLM reranking:
+
+1. Copy `.env.example` to `.env.local` and set `OPENAI_API_KEY`.
+2. Run `npm run data:build-retrieval-index` to embed the versioned corpus.
+3. Set `JUSTENOUGH_ENABLE_LLM=true` when serving or deploying.
+
+The LLM extracts the target profile and judges case similarity; it never emits
+the routing recommendation. Current outcomes do not normalize cost or latency,
+so reasoning effort is explicitly a temporary routing proxy rather than an
+economic comparison.
 
 ## Development
 

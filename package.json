@@ -19,6 +19,7 @@
     "data:build-corpus": "node scripts/build-corpus-manifest.mjs",
     "data:build-fixtures": "node scripts/build-normalization-fixtures.mjs",
     "data:build-index": "node scripts/build-evidence-index.mjs",
+    "data:build-retrieval-index": "node scripts/build-retrieval-index.mjs",
     "data:upload-r2": "node scripts/upload-corpus-r2.mjs",
     "deploy:cloudflare": "npm run build && wrangler deploy",
     "validate:deployment": "node scripts/validate-deployment.mjs"
